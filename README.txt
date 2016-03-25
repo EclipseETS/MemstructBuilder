@@ -20,11 +20,11 @@ HOW TO USE:
 La memstruct est séparer en 3, on y retouve les boards, les messages et les signaux. Chaque board à des messages can qui eux possède des signaux.
 
 Pour chaque Board on entre sa string de définition:
-b:Board_name,Board_offset,Is_extended 
+b:Board_name,Board_offset,Is_extended, is_little_endian
 
 Ensuite on définie chacun des messages avec ces signaux 
 m:Message_name,message_id
-s:signal_name,signaldatatype,init_value,factor,offset,unit,is_extended,is_little_endian
+s:signal_name,signaldatatype,init_value,factor,offset,unit
 
 une fois les entry de completer, runner le script eclipseMemstructGen.py
 
