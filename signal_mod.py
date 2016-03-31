@@ -3,19 +3,29 @@ class signal:
 		self.name = ""
 		self.id = 0
 		self.type = ""
+		self.bitsize = 0
 		self.init_value = 0
 		self.factor = 0
 		self.offset = 0
 		self.unit = ""
+		self.minvalue = 0
+		self.maxvalue = 0
+		self.signed = "false"
+		self.float = "false"
 
-	def set_params(self,signal_name, signal_id, datatype, init_value, factor, offset, unit):
+	def set_params(self,signal_name, signal_id, datatype, init_value, factor, offset, unit, minvalue, maxvalue, bitsize, issigned, isfloat):
 		self.name = signal_name
 		self.id = signal_id
 		self.type = datatype
+		self.type = bitsize
 		self.init_value = init_value
 		self.factor = factor
 		self.offset = offset
 		self.unit = unit
+		self.minvalue = minvalue
+		self.maxvalue = maxvalue
+		self.signed = issigned
+		self.float = isfloat
 
 	def print_callback(self, fo):
 		fo.write("#ifndef {}_callback\n".format(self.name))

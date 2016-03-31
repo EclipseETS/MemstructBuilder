@@ -4,7 +4,6 @@ from board_mod import boards
 from message_mod import message
 
 def get_signal_from_entry(raw_entry, line, signal_no, sig):
-	print "Adding new signal"
 
 	raw_entry = raw_entry.replace("\t", "")
 	raw_entry = raw_entry.replace("\n", "")
@@ -12,8 +11,8 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 
 	entry = raw_entry.split(",")
 
-	if(len(entry) != 6):
-		print "Not enough parameters at line: {}".format(line)
+	if(len(entry) != 8):
+		print "Not enough or to much parameters at line: {}".format(line)
 		return -1
 
 	signal_name = entry[0]
@@ -24,18 +23,39 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 	datatype = entry[1]
 	if(entry[1] == "F"):
 		datatype = "float"
+		bitsize = 32
+		isfloat = "true"
+		issigned = "true"
 	elif(entry[1] == "U16"):
 		datatype = "uint16_t"
+		bitsize = 16
+		isfloat = "false"
+		issigned = "false"
 	elif(entry[1] == "U8"):
 		datatype = "uint8_t"
+		bitsize = 8
+		isfloat = "false"
+		issigned = "false"
 	elif(entry[1] == "U32"):
 		datatype = "uint32_t"
+		bitsize = 32
+		isfloat = "false"
+		issigned = "false"
 	elif(entry[1] == "8"):
-		datatype = "uint8_t"
+		datatype = "int8_t"
+		bitsize = 8
+		isfloat = "false"
+		issigned = "true"
 	elif(entry[1] == "16"):
-		datatype = "uint8_t"
+		datatype = "int16_t"
+		bitsize = 16
+		isfloat = "false"
+		issigned = "true"
 	elif(entry[1] == "32"):
-		datatype = "uint8_t"
+		datatype = "int32_t"
+		bitsize = 32
+		isfloat = "false"
+		issigned = "true"
 	else:
 		print "Bad datatype at line: {}".format(line)
 		return -1
@@ -62,12 +82,21 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 		print "Bad unit name at line: {}".format(line)
 		return -1
 
-	sig.set_params(signal_name, signal_no, datatype, init_value, factor, unit_name, offset)
+	try:
+		minvalue = int(entry[6])
+	except:
+		print "minvalue value is not a valid number at line : {}".format(line)
+
+	try:
+		maxvalue = int(entry[7])
+	except:
+		print "maxvalue value is not a valid number at line : {}".format(line)
+
+	sig.set_params(signal_name, signal_no, datatype, init_value, factor, offset, unit_name, minvalue, maxvalue, bitsize, issigned, isfloat)
 
 	return sig
 
 def get_board_from_entry(board_entry, line, board):
-	print "Adding new board"
 
 	board_entry = board_entry.replace("\t", "")
 	board_entry = board_entry.replace("\n", "")
@@ -114,7 +143,6 @@ def get_board_from_entry(board_entry, line, board):
 
 
 def get_message_from_entry(message_entry, line, mes):
-	print "Adding new message"
 
 	message_entry = message_entry.replace("\t", "")
 	message_entry = message_entry.replace("\n", "")

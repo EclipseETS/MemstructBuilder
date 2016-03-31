@@ -29,7 +29,6 @@ def generate(board_list):
 	#Generate Callback
 	fo.write("/*Callback definition*/\n")
 	for board in board_list:
-		print board.name
 		board.print_header(fo)
 		board.print_callback(fo)
 

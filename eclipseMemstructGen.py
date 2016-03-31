@@ -7,6 +7,7 @@ from signal_mod import signal
 from board_mod import boards
 import memstructh
 import memstructc
+import xmlGen
 
 raw_entry = open("memstruct_entry.txt")
 
@@ -61,6 +62,6 @@ except:
 memstructh.generate(board_list)
 memstructc.generate(board_list)
 
-#generate memstruct xml
+xmlGen.generate(board_list)
 
 #generate memstruct vector
