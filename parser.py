@@ -69,7 +69,10 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 	try:
 		factor = int(entry[3])
 	except:
-		print "Factor is not a valid number"
+		try:
+			factor = float(entry[3])
+		except:
+			print "Factor is not a valid number"
 
 	try:
 		offset = int(entry[4])
@@ -85,12 +88,20 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 	try:
 		minvalue = int(entry[6])
 	except:
-		print "minvalue value is not a valid number at line : {}".format(line)
+		try:
+			minvalue = float(entry[6])
+		except:
+			print "minvalue value is not a valid number at line : {}".format(line)
+
+        
 
 	try:
 		maxvalue = int(entry[7])
 	except:
-		print "maxvalue value is not a valid number at line : {}".format(line)
+		try:
+			maxvalue = float(entry[7])
+		except:
+			print "maxvalue value is not a valid number at line : {}".format(line)
 
 	sig.set_params(signal_name, signal_no, datatype, init_value, factor, offset, unit_name, minvalue, maxvalue, bitsize, issigned, isfloat)
 
