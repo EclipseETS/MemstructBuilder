@@ -1,4 +1,4 @@
-import parser
+import memparser
 import sys
 import os
 import pdb
@@ -23,7 +23,7 @@ for index, line in enumerate(raw_entry, start = 1):
 		line = line[2:]
 
 		board = boards()
-		parser.get_board_from_entry(line, index, board)
+		memparser.get_board_from_entry(line, index, board)
 		if(board == -1):
 			sys.exit()
 		board_list.append(board)
@@ -33,7 +33,7 @@ for index, line in enumerate(raw_entry, start = 1):
 		line = line[2:]
 
 		mes = message()
-		parser.get_message_from_entry(line, index, mes)
+		memparser.get_message_from_entry(line, index, mes)
 		if(mes == -1):
 			sys.exit()
 		board.add_message(mes)
@@ -42,7 +42,7 @@ for index, line in enumerate(raw_entry, start = 1):
 		line = line.upper()
 		line = line[2:]
 		sig = signal()
-		parser.get_signal_from_entry(line, index, signal_cnt, sig)
+		memparser.get_signal_from_entry(line, index, signal_cnt, sig)
 		if(sig == -1):
 			sys.exit()
 		signal_cnt += 1
