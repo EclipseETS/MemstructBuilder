@@ -17,7 +17,7 @@ class signal:
 		self.name = signal_name
 		self.id = signal_id
 		self.type = datatype
-		self.type = bitsize
+		self.bitsize = bitsize
 		self.init_value = init_value
 		self.factor = factor
 		self.offset = offset
