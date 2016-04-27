@@ -27,34 +27,19 @@ def generate(board_list):
 			att = {"identifier": str(format(board.offset + message.id, '02x')), "type": "0"} #a verifier
 			trame = ET.SubElement(device, "trame", att)
 
-			if board.little_endian:
-				for signal in reversed(message.signal):
-					att = {"id": str(cnt), "name": signal.name}
-					deviceitem = ET.SubElement(trame, "deviceitem", att)
-					ET.SubElement(deviceitem, "unit").text = str(signal.unit)
-					ET.SubElement(deviceitem, "bitsize").text = str(signal.bitsize)
-					ET.SubElement(deviceitem, "minvalue").text = str(signal.minvalue)
-					ET.SubElement(deviceitem, "maxvalue").text = str(signal.maxvalue)
-					ET.SubElement(deviceitem, "resolution").text = "1"
-					ET.SubElement(deviceitem, "factor").text = str(signal.factor)
-					ET.SubElement(deviceitem, "offset").text = str(signal.offset)
-					ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-					ET.SubElement(deviceitem, "isfloat").text = str(signal.float)
-					cnt += 1
-			else:
-				for signal in message.signal:
-					att = {"id": str(cnt), "name": signal.name}
-					deviceitem = ET.SubElement(trame, "deviceitem", att)
-					ET.SubElement(deviceitem, "unit").text = str(signal.unit)
-					ET.SubElement(deviceitem, "bitsize").text = str(signal.bitsize)
-					ET.SubElement(deviceitem, "minvalue").text = str(signal.minvalue)
-					ET.SubElement(deviceitem, "maxvalue").text = str(signal.maxvalue)
-					ET.SubElement(deviceitem, "resolution").text = "1"
-					ET.SubElement(deviceitem, "factor").text = str(signal.factor)
-					ET.SubElement(deviceitem, "offset").text = str(signal.offset)
-					ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-					ET.SubElement(deviceitem, "isfloat").text = str(signal.float)
-					cnt += 1
+			for signal in message.signal:
+				att = {"id": str(cnt), "name": signal.name}
+				deviceitem = ET.SubElement(trame, "deviceitem", att)
+				ET.SubElement(deviceitem, "unit").text = str(signal.unit)
+				ET.SubElement(deviceitem, "bitsize").text = str(signal.bitsize)
+				ET.SubElement(deviceitem, "minvalue").text = str(signal.minvalue)
+				ET.SubElement(deviceitem, "maxvalue").text = str(signal.maxvalue)
+				ET.SubElement(deviceitem, "resolution").text = "1"
+				ET.SubElement(deviceitem, "factor").text = str(signal.factor)
+				ET.SubElement(deviceitem, "offset").text = str(signal.offset)
+				ET.SubElement(deviceitem, "signed").text = str(signal.signed)
+				ET.SubElement(deviceitem, "isFloat").text = str(signal.float)
+				cnt += 1
 				
 	rough = ET.tostring(root, 'utf-8')
 	reparsed = minidom.parseString(rough)
