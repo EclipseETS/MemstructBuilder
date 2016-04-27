@@ -8,6 +8,7 @@ from board_mod import boards
 import memstructh
 import memstructc
 import xmlGen
+import dbGen
 
 raw_entry = open("memstruct_entry.txt")
 
@@ -64,4 +65,4 @@ memstructc.generate(board_list)
 
 xmlGen.generate(board_list)
 
-#generate memstruct vector
+dbGen.generate(board_list)
