@@ -52,6 +52,7 @@ def generate(board_list):
 	fo.write('\n')
 	fo.write('\n')
 
+	float_footer = []
 	for board in board_list:
 		for message in board.message:
 			dlc = 0
@@ -60,19 +61,27 @@ def generate(board_list):
 				dlc = dlc + (int(signal.bitsize) / 8)
 			fo.write("BO_" + " " + str(board.offset + message.id) + " " + str(message.name) + ": " + str(dlc) + " " + "Vector__XXX" + "\n")
 			for signal in message.signal:
+				# Signed
 				if (signal.signed == "true"):
 					signed = "-"
 				else:
 					signed = "+"
-				fo.write(" SG_" + " " + str(signal.name) + " : " + str(signal_offset) + "|" + str(signal.bitsize) + "@1" + str(signed) + " (" + str(signal.factor) + "," + str(signal.offset) + ")" + " [" + str(signal.minvalue) + "|" + str(signal.maxvalue) + "]" + " " + '"' + str(signal.unit) + '"' + " " + "Vector__XXX" + "\n")
+				# endianess
+				if (board.little_endian == 1):
+					endianess = "1"
+				else:
+					endianess = "0"
+				# Float footer
+				if (signal.float == "true"):
+					float_footer.append("SIG_VALTYPE_ " + str(board.offset + message.id) + " " + str(signal.name) + " : 1;\n")
+
+				fo.write(" SG_" + " " + str(signal.name) + " : " + str(signal_offset) + "|" + str(signal.bitsize) + "@" + str(endianess) + str(signed) + " (" + str(signal.factor) + "," + str(signal.offset) + ")" + " [" + str(signal.minvalue) + "|" + str(signal.maxvalue) + "]" + " " + '"' + str(signal.unit) + '"' + " " + "Vector__XXX" + "\n")
 				signal_offset = signal_offset + int(signal.bitsize)
-				# ET.SubElement(deviceitem, "unit").text = str(signal.unit)
-				# ET.SubElement(deviceitem, "bitsize").text = str(signal.bitsize)
-				# ET.SubElement(deviceitem, "minvalue").text = str(signal.minvalue)
-				# ET.SubElement(deviceitem, "maxvalue").text = str(signal.maxvalue)
-				# ET.SubElement(deviceitem, "resolution").text = "1"
-				# ET.SubElement(deviceitem, "factor").text = str(signal.factor)
-				# ET.SubElement(deviceitem, "offset").text = str(signal.offset)
-				# ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-				# ET.SubElement(deviceitem, "isFloat").text = str(signal.float)
 			fo.write('\n')
+	fo.write('\n')
+	fo.write('\n')
+	fo.write('BA_DEF_  "BusType" STRING ;\n')
+	fo.write('BA_DEF_DEF_  "BusType" "";\n')
+	for entry in float_footer:
+		fo.write(entry)
+	fo.write('\n')
