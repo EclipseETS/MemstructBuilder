@@ -57,23 +57,34 @@ def generate(board_list):
 		for message in board.message:
 			dlc = 0
 			signal_offset = 0
+
+			# ID
+			id = (board.offset + message.id)
+
+			# Extended
+			if (board.extend == 1):
+				id = id | 0x80000000
+
+			# DLC
 			for signal in message.signal:
 				dlc = dlc + (int(signal.bitsize) / 8)
-			fo.write("BO_" + " " + str(board.offset + message.id) + " " + str(message.name) + ": " + str(dlc) + " " + "Vector__XXX" + "\n")
+
+			fo.write("BO_" + " " + str(id) + " " + str(message.name) + ": " + str(dlc) + " " + "Vector__XXX" + "\n")
+
 			for signal in message.signal:
 				# Signed
 				if (signal.signed == "true"):
 					signed = "-"
 				else:
 					signed = "+"
-				# endianess
+				# Endianess
 				if (board.little_endian == 1):
 					endianess = "1"
 				else:
 					endianess = "0"
 				# Float footer
 				if (signal.float == "true"):
-					float_footer.append("SIG_VALTYPE_ " + str(board.offset + message.id) + " " + str(signal.name) + " : 1;\n")
+					float_footer.append("SIG_VALTYPE_ " + str(id) + " " + str(signal.name) + " : 1;\n")
 
 				fo.write(" SG_" + " " + str(signal.name) + " : " + str(signal_offset) + "|" + str(signal.bitsize) + "@" + str(endianess) + str(signed) + " (" + str(signal.factor) + "," + str(signal.offset) + ")" + " [" + str(signal.minvalue) + "|" + str(signal.maxvalue) + "]" + " " + '"' + str(signal.unit) + '"' + " " + "Vector__XXX" + "\n")
 				signal_offset = signal_offset + int(signal.bitsize)
