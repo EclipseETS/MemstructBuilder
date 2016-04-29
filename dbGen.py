@@ -56,7 +56,12 @@ def generate(board_list):
 	for board in board_list:
 		for message in board.message:
 			dlc = 0
-			signal_offset = 0
+
+			# Signal offset
+			if (board.little_endian == 1):
+				signal_offset = 0
+			else:
+				signal_offset = 7
 
 			# ID
 			id = (board.offset + message.id)
@@ -88,6 +93,7 @@ def generate(board_list):
 
 				fo.write(" SG_" + " " + str(signal.name) + " : " + str(signal_offset) + "|" + str(signal.bitsize) + "@" + str(endianess) + str(signed) + " (" + str(signal.factor) + "," + str(signal.offset) + ")" + " [" + str(signal.minvalue) + "|" + str(signal.maxvalue) + "]" + " " + '"' + str(signal.unit) + '"' + " " + "Vector__XXX" + "\n")
 				signal_offset = signal_offset + int(signal.bitsize)
+
 			fo.write('\n')
 	fo.write('\n')
 	fo.write('\n')
