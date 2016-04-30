@@ -29,6 +29,7 @@ board_index = 0
 m_name_index = 0
 s_name_index = 0
 initial_value = "0"
+deviceitem_list = []
 
 # Create XML output file
 fo = open("memstruct_entry.txt", "w+")
@@ -131,6 +132,15 @@ for device in devices:
 					data_type = "U16"
 				elif (bitsize == "32" and signed == "false"):
 					data_type = "U32"
-					
-			fo.write("s:" + s_name[board_index][s_name_index] + ", " + data_type + ", " + initial_value + ", " + factor + ", " + offset + ", " + unit + ", " + minvalue + ", " + maxvalue + "\n")
+
+			deviceitem_list.append("s:" + s_name[board_index][s_name_index] + ", " + data_type + ", " + initial_value + ", " + factor + ", " + offset + ", " + unit + ", " + minvalue + ", " + maxvalue + "\n")
 			s_name_index = s_name_index + 1
+
+		if (is_little_endian == "1"):
+			for item in reversed(deviceitem_list):
+				fo.write(item)
+		else:
+			for item in deviceitem_list:
+				fo.write(item)
+
+		del deviceitem_list[:]
