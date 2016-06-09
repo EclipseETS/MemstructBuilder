@@ -39,7 +39,7 @@ def generate(board_list):
 					ET.SubElement(deviceitem, "factor").text = str(signal.factor)
 					ET.SubElement(deviceitem, "offset").text = str(signal.offset)
 					ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-					ET.SubElement(deviceitem, "isfloat").text = str(signal.float)
+					ET.SubElement(deviceitem, "isFloat").text = str(signal.float)
 					cnt += 1
 			else:
 				for signal in message.signal:
@@ -53,7 +53,7 @@ def generate(board_list):
 					ET.SubElement(deviceitem, "factor").text = str(signal.factor)
 					ET.SubElement(deviceitem, "offset").text = str(signal.offset)
 					ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-					ET.SubElement(deviceitem, "isfloat").text = str(signal.float)
+					ET.SubElement(deviceitem, "isFloat").text = str(signal.float)
 					cnt += 1
 				
 	rough = ET.tostring(root, 'utf-8')
