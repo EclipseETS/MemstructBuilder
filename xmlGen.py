@@ -21,10 +21,15 @@ def generate(board_list):
 	for board in board_list:
 		att = {"id": (str(format(board.offset, '02x')))[0:1], "name": board.name}
 		device = ET.SubElement(root, "device", att)
+		
+		if board.extend:
+			type = '2'
+		else:
+			type = '0'
 
 		cnt = 0
 		for message in board.message:
-			att = {"identifier": str(format(board.offset + message.id, '02x')), "type": "0"} #a verifier
+			att = {"identifier": str(format(board.offset + message.id, '02x')), "type": type}
 			trame = ET.SubElement(device, "trame", att)
 
 			if board.little_endian:
