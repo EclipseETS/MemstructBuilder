@@ -114,7 +114,7 @@ s:S_DRIVE_R_ODOMETER, F, 0, 1, 0, m, 0, 2147483647
 /*******************************************************************/
 /*							BMS									*/
 /********************************************************************/
-b:BMS, 0x300, 0, 1
+b:BMS, 0x400, 1, 1
 
 m:M_BMS_HEARTBEAT, 0x00
 s:S_BMS_DEVICEID, U32, 0, 1, 0,  , 0, 2147483647
@@ -160,17 +160,18 @@ m:M_BMS_CAN_CTRL, 0x21
 s:S_BMS_CAN_DISCHARGE_ENABLE, U8, 0, 1, 0, , 0, 255
 
 /*******************************************************************/
-/*							FLASHERS									*/
+/*							DASHBOARD									*/
 /********************************************************************/
-b:FLASHERS, 0x500, 1, 0
+b:DASHBOARD, 0x500, 1, 0
 
-m:M_FLASHERS_STATUS, 0x00
-s:S_FLASHERS_STATUS, U16, 0, 1, 0, NA , 0, 65532
-s:S_FLASHERS_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
+m:M_DASHBOARD_STATUS, 0x00
+s:S_DASHBOARD_STATUS, U16, 0, 1, 0, NA , 0, 65532
+s:S_DASHBOARD_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
 
-m:M_FLASHERS_PEDAL, 0x01
-s:S_FLASHERS_BREAK, U8, 0, 1, 0, NA , 0, 1
-s:S_FLASHERS_ACCL, F, 0, 100, 0, PC, 0, 100
+m:M_DASHBOARD_CTRL, 0x01
+s:S_DASHBOARD_REGEN, U32, 0, 1, 0, NA, 0, 2147483647
+s:S_DASHBOARD_BREAK, U8, 0, 1, 0, NA , 0, 1
+s:S_DASHBOARD_START, U8, 0, 1, 0, NA, 0, 1
 
 /*******************************************************************/
 /*							VOLANT									*/
@@ -217,7 +218,7 @@ s:S_INSTRU_ACC_Z, 16, 0, 250, 0, g, -10, 10
 /*******************************************************************/
 /*							POWERSUPPLY									*/
 /********************************************************************/
-b:POWERSUPPLY, 0x700, 1, 0
+b:POWERSUPPLY, 0x800, 1, 0
 
 m:M_POWERSUPPLY_STATUS, 0x00
 s:S_POWERSUPPLY_STATUS, U16, 0, 1, 0, NA , 0, 65532
@@ -238,7 +239,16 @@ s:S_POWERSUPPLY_12V_AUX_VOLTAGE, F, 0, 1, 0, V, 11, 13.5
 /*******************************************************************/
 /*							IGNITION									*/
 /********************************************************************/
-b:IGNITION, 0x760, 0, 1
+b:IGNITION, 0x900, 0, 1
 
 m:M_IGNITION_ID, 0x05
 s:S_IGNITION_STATUS1, U8, 0, 1, 0, , 0, 255
+
+/*******************************************************************/
+/*							FLASHER									*/
+/********************************************************************/
+b:FLASHER, 0x1000, 1, 0
+
+m:M_FLASHER, 0x00
+s:S_FLASHER_STATUS, U16, 0, 1, 0, NA , 0, 65532
+s:S_FLASHER_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
