@@ -15,11 +15,13 @@ def generate(board_list):
 
 	fo = open("output/protocolV9.xml", "w+")
 
-	att = {"xmlnsl": "http://eclipse.etsmtl.ca", "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation": "http://eclipse.etsmtl.ca protocolV8Schema.xsd"}
+	att = {"xmlns": "http://eclipse.etsmtl.ca", "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation": "http://eclipse.etsmtl.ca protocolV8Schema.xsd"}
 	root = ET.Element("char", att)
 
+	board_id = 0
 	for board in board_list:
-		att = {"id": (str(format(board.offset, '02x')))[0:1], "name": board.name}
+		board_id = board_id + 1
+		att = {"id": str(board_id), "name": board.name}
 		device = ET.SubElement(root, "device", att)
 		
 		if board.extend:
