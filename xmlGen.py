@@ -15,16 +15,23 @@ def generate(board_list):
 
 	fo = open("output/protocolV9.xml", "w+")
 
-	att = {"xmlnsl": "http://eclipse.etsmtl.ca", "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation": "http://eclipse.etsmtl.ca protocolV8Schema.xsd"}
+	att = {"xmlns": "http://eclipse.etsmtl.ca", "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation": "http://eclipse.etsmtl.ca protocolV8Schema.xsd"}
 	root = ET.Element("char", att)
 
+	board_id = 0
 	for board in board_list:
-		att = {"id": (str(format(board.offset, '02x')))[0:1], "name": board.name}
+		board_id = board_id + 1
+		att = {"id": str(board_id), "name": board.name}
 		device = ET.SubElement(root, "device", att)
+		
+		if board.extend:
+			type = '2'
+		else:
+			type = '0'
 
 		cnt = 0
 		for message in board.message:
-			att = {"identifier": str(format(board.offset + message.id, '02x')), "type": "0"} #a verifier
+			att = {"identifier": str(format(board.offset + message.id, '02x')), "type": type}
 			trame = ET.SubElement(device, "trame", att)
 
 			if board.little_endian:
@@ -39,7 +46,7 @@ def generate(board_list):
 					ET.SubElement(deviceitem, "factor").text = str(signal.factor)
 					ET.SubElement(deviceitem, "offset").text = str(signal.offset)
 					ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-					ET.SubElement(deviceitem, "isfloat").text = str(signal.float)
+					ET.SubElement(deviceitem, "isFloat").text = str(signal.float)
 					cnt += 1
 			else:
 				for signal in message.signal:
@@ -53,7 +60,7 @@ def generate(board_list):
 					ET.SubElement(deviceitem, "factor").text = str(signal.factor)
 					ET.SubElement(deviceitem, "offset").text = str(signal.offset)
 					ET.SubElement(deviceitem, "signed").text = str(signal.signed)
-					ET.SubElement(deviceitem, "isfloat").text = str(signal.float)
+					ET.SubElement(deviceitem, "isFloat").text = str(signal.float)
 					cnt += 1
 				
 	rough = ET.tostring(root, 'utf-8')
