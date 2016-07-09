@@ -180,27 +180,9 @@ s:S_DASHBOARD_BREAK, U8, 0, 1, 0, n/a, 0, 1
 s:S_DASHBOARD_START, U8, 0, 1, 0, n/a, 0, 1
 
 /*******************************************************************/
-/*							VOLANT									*/
-/********************************************************************/
-b:VOLANT, 0x600, 1, 0
-
-m:M_VOLANT_STATUS, 0x00
-s:S_VOLANT_STATUS, U16, 0, 1, 0, n/a, 0, 65532
-s:S_VOLANT_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
-
-m:M_VOLANT_CTRL, 0x01
-s:S_VOLANT_OPMODE, U8, 0, 1, 0, n/a, 0, 255
-s:S_VOLANT_BUTTON, U8, 0, 1, 0, n/a, 0, 255
-
-m:M_VOLANT_VELOCITY, 0x02
-s:S_VOLANT_VEHICLE_VELOCITY, F, 0, 3.6, 0, km/h, -2147483648, 2147483647
-s:S_VOLANT_MOTOR_VELOCITY, F, 0, 1, 0, rpm, -2147483648, 2147483647
-
-
-/*******************************************************************/
 /*							INSTRU									*/
 /********************************************************************/
-b:INSTRU, 0x700, 1, 0
+b:INSTRU, 0x600, 1, 0
 
 m:M_INSTRU_STATUS, 0x00
 s:S_INSTRU_STATUS, U16, 0, 1, 0, n/a, 0, 65532
@@ -225,6 +207,23 @@ m:M_INSTRU_ACC, 0x05
 s:S_INSTRU_ACC_X, 16, 0, 250, 0, g, -10, 10
 s:S_INSTRU_ACC_Y, 16, 0, 250, 0, g, -10, 10
 s:S_INSTRU_ACC_Z, 16, 0, 250, 0, g, -10, 10
+
+/*******************************************************************/
+/*							VOLANT									*/
+/********************************************************************/
+b:VOLANT, 0x700, 1, 0
+
+m:M_VOLANT_STATUS, 0x00
+s:S_VOLANT_STATUS, U16, 0, 1, 0, n/a, 0, 65532
+s:S_VOLANT_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
+
+m:M_VOLANT_CTRL, 0x01
+s:S_VOLANT_OPMODE, U8, 0, 1, 0, n/a, 0, 255
+s:S_VOLANT_BUTTON, U8, 0, 1, 0, n/a, 0, 255
+
+m:M_VOLANT_VELOCITY, 0x02
+s:S_VOLANT_VEHICLE_VELOCITY, F, 0, 3.6, 0, km/h, -2147483648, 2147483647
+s:S_VOLANT_MOTOR_VELOCITY, F, 0, 1, 0, rpm, -2147483648, 2147483647
 
 /*******************************************************************/
 /*							MPPT	   */
