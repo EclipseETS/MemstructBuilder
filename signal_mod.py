@@ -47,7 +47,7 @@ class signal:
 
 
 		if(little_endian):
-			fo.write("\t\t\t\t{}|CANFRM_LITTLE_ENDIAN				       /* Byte Position */\n".format(byte_pos))
+			fo.write("(\t\t\t\t{})|(CANFRM_LITTLE_ENDIAN)				       /* Byte Position */\n".format(byte_pos))
 		else:
 			fo.write("\t\t\t\t{}				       /* Byte Position */\n".format(byte_pos))
 

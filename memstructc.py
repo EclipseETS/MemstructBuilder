@@ -15,10 +15,10 @@ def generate(board_list):
 	#Start with header generation
 	fo.write("/* This file was generate by EclipseMemstructGen.py*/\n")
 
-	fo.write('#include "memstruct.h"\n')
+	fo.write('#include <stdint.h>\n\n')
 	fo.write('#include "can_sig.h"\n')
-	fo.write('#include "can_msg.h"\n')
-	fo.write('#include "ucos_ii.h"\n\n')
+	fo.write('#include "can_msg.h"\n\n')
+	fo.write('#include "memstruct.h"\n\n')
 
 	fo.write("#define CAN_PARA_MACRO(signame, width, initValue, callback) { CANSIG_UNCHANGED, width, initValue, callback }\n\n")
 	fo.write("CANSIG_DATA CanSigTbl[CANSIG_N];\n")

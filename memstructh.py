@@ -17,12 +17,14 @@ def generate(board_list):
 	fo.write("/* This file was generate by EclipseMemstructGen.py*/\n")
 	fo.write("#ifndef MEMSTRUCT_H_\n")
 	fo.write("#define MEMSTRUCT_H_\n\n")
-	fo.write('#include "preprocessor.h"\n')
-	fo.write('#include "compiler.h"\n')
+	fo.write('#include <stddef.h>\n\n')
 	fo.write('#include "can_cfg.h"\n')
 	fo.write('#include "can_sig.h"\n')
 	fo.write('#include "can_msg.h"\n')
-	fo.write('#include "can_frm.h"\n')
+	fo.write('#include "can_frm.h"\n\n')
+	fo.write('#include "service_can_callbacks.h"\n\n')
+	fo.write('#define CANFRM_EXTENDED_ID  (1<<29)\n')
+	fo.write('#define CANFRM_RTR          (1<<30)\n\n')
 
 	#TODO Add global define here from an input file
 
