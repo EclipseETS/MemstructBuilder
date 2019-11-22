@@ -7,11 +7,11 @@ from board_mod import boards
 def generate(board_list):
 
 	try:
-		os.remove("output/CAN_DB_E9.dbc")
+		os.remove("output/CAN_DB_E10.dbc")
 	except:
 		pass
 
-	fo = open("output/CAN_DB_E9.dbc", "w+")
+	fo = open("output/CAN_DB_E10.dbc", "w+")
 
 	fo.write('VERSION ""\n')
 	fo.write('\n')

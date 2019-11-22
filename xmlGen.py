@@ -9,11 +9,11 @@ from board_mod import boards
 def generate(board_list):
 
 	try:
-		os.remove("output/protocolV9.xml")
+		os.remove("output/protocolV10.xml")
 	except:
 		pass
 
-	fo = open("output/protocolV9.xml", "w+")
+	fo = open("output/protocolV10.xml", "w+")
 
 	att = {"xmlns": "http://eclipse.etsmtl.ca", "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation": "http://eclipse.etsmtl.ca protocolV8Schema.xsd"}
 	root = ET.Element("char", att)
