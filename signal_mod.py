@@ -64,10 +64,10 @@ class signal:
 
 
 	def print_debug(self):
-		print self.name
-		print self.id
-		print self.type
-		print self.init_value
-		print self.factor
-		print self.offset
-		print self.unit
+		print (self.name)
+		print (self.id)
+		print (self.type)
+		print (self.init_value)
+		print (self.factor)
+		print (self.offset)
+		print (self.unit)

@@ -1,7 +1,7 @@
-Version 1.0
+Version 1.1
 
 Prerequisites:
--	Python 2 dernière version (ne fontionne pas avec Python 3)
+-	Python 3 dernière version (ne fontionne pas avec Python 2)
 
 Features:
 -	Parse le fichier memstruct_entry.txt qui contient la définition des messages et signaux CAN d'Éclipse

@@ -45,19 +45,19 @@ devices = collection.getElementsByTagName("device")
 for device in devices:
 	m_name_index = 0
 	s_name_index = 0
-	print "*****device*****"
+	print ("*****device*****")
 	#id_board = device.getAttribute("id")
 	#print "id:=%s" % id_board
 	name = device.getAttribute("name")
-	print "name:=%s" % name
+	print ("name:=%s" % name)
 
 	trames = device.getElementsByTagName('trame')
 	for trame in trames:
-		print "*****trame*****"
+		print ("*****trame*****")
 		identifier = trame.getAttribute("identifier")
-		print "identifier=%s" % identifier
+		print ("identifier=%s" % identifier)
 		type = trame.getAttribute("type")
-		print "type=%s" % type
+		print ("type=%s" % type)
 		msg_offset = "0x" + identifier[1:3].upper()
 		board_id = "0x" + identifier[0] + "00"
 		if (trame == trames[0]):
@@ -96,27 +96,27 @@ for device in devices:
 
 		deviceitems = trame.getElementsByTagName('deviceitem')
 		for deviceitem in deviceitems:
-			print "*****deviceitem*****"
+			print ("*****deviceitem*****")
 			id = deviceitem.getAttribute("id")
-			print "id=%s" % id
+			print ("id=%s" % id)
 			unit = deviceitem.getElementsByTagName('unit')[0].childNodes[0].data
-			print "unit=%s" % unit
+			print ("unit=%s" % unit)
 			bitsize = deviceitem.getElementsByTagName('bitsize')[0].childNodes[0].data
-			print "bitsize=%s" % bitsize
+			print ("bitsize=%s" % bitsize)
 			minvalue = deviceitem.getElementsByTagName('minvalue')[0].childNodes[0].data
-			print "minvalue=%s" % minvalue
+			print ("minvalue=%s" % minvalue)
 			maxvalue = deviceitem.getElementsByTagName('maxvalue')[0].childNodes[0].data
-			print "maxvalue=%s" % maxvalue
+			print ("maxvalue=%s" % maxvalue)
 			resolution = deviceitem.getElementsByTagName('resolution')[0].childNodes[0].data
-			print "resolution=%s" % resolution
+			print ("resolution=%s" % resolution)
 			factor = deviceitem.getElementsByTagName('factor')[0].childNodes[0].data
-			print "factor=%s" % factor
+			print ("factor=%s" % factor)
 			offset = deviceitem.getElementsByTagName('offset')[0].childNodes[0].data
-			print "offset=%s" % offset
+			print ("offset=%s" % offset)
 			signed = deviceitem.getElementsByTagName('signed')[0].childNodes[0].data
-			print "signed=%s" % signed
+			print ("signed=%s" % signed)
 			isFloat = deviceitem.getElementsByTagName('isFloat')[0].childNodes[0].data
-			print "isFloat=%s" % isFloat
+			print ("isFloat=%s" % isFloat)
 			if (isFloat == "true"):
 				data_type = "F"
 			else:

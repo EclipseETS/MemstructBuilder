@@ -12,12 +12,12 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 	entry = raw_entry.split(",")
 
 	if(len(entry) != 8):
-		print "Not enough or to much parameters at line: {}".format(line)
+		print("Not enough or to much parameters at line: {}".format(line))
 		return -1
 
 	signal_name = entry[0]
 	if(re.match("[^A-Za-z0-9_ ]", signal_name)):
-		print "Bad Signal name at line: {}".format(line)
+		print ("Bad Signal name at line: {}".format(line))
 		return -1
 
 	datatype = entry[1]
@@ -57,13 +57,13 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 		isfloat = "false"
 		issigned = "true"
 	else:
-		print "Bad datatype at line: {}".format(line)
+		print ("Bad datatype at line: {}".format(line))
 		return -1
 
 	try:
 		init_value = int(entry[2])
 	except:
-		print "Init value is not a valid number at line : {}".format(line)
+		print ("Init value is not a valid number at line : {}".format(line))
 		return -1
 
 	try:
@@ -72,17 +72,17 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 		try:
 			factor = float(entry[3])
 		except:
-			print "Factor is not a valid number"
+			print ("Factor is not a valid number")
 
 	try:
 		offset = int(entry[4])
 	except:
-		print "Offset value is not a valid number at line : {}".format(line)
+		print ("Offset value is not a valid number at line : {}".format(line))
 		return -1
 
 	unit_name = entry[5]
 	if(re.match("[^A-Za-z]", unit_name)):
-		print "Bad unit name at line: {}".format(line)
+		print ("Bad unit name at line: {}".format(line))
 		return -1
 
 	try:
@@ -91,7 +91,7 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 		try:
 			minvalue = float(entry[6])
 		except:
-			print "minvalue value is not a valid number at line : {}".format(line)
+			print ("minvalue value is not a valid number at line : {}".format(line))
 
         
 
@@ -101,7 +101,7 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
 		try:
 			maxvalue = float(entry[7])
 		except:
-			print "maxvalue value is not a valid number at line : {}".format(line)
+			print ("maxvalue value is not a valid number at line : {}".format(line))
 
 	sig.set_params(signal_name, signal_no, datatype, init_value, factor, offset, unit_name, minvalue, maxvalue, bitsize, issigned, isfloat)
 
@@ -117,18 +117,18 @@ def get_board_from_entry(board_entry, line, board):
 	entry = board_entry.split(",")
 
 	if (len(entry) != 4):
-		print "Not enough parameters at line: {}".format(line)
+		print ("Not enough parameters at line: {}".format(line))
 		return
 
 	board_name = entry[0]
 	if(re.match("[^A-Za-z0-9_ ]", board_name)):
-		print "Bad board name at line: {}".format(line)
+		print ("Bad board name at line: {}".format(line))
 		return -1
 
 	try:
 		offset = int(entry[1], 16)
 	except:
-		print "Board offset is not a valid number"
+		print ("Board offset is not a valid number")
 		return -1
 
 	if(entry[2] == "1"):
@@ -136,8 +136,8 @@ def get_board_from_entry(board_entry, line, board):
 	elif(entry[2] == "0"):
 		extend = 0
 	else:
-		print "adress_extend value is not a valid number at line : {}".format(line)
-		print entry[2]
+		print ("adress_extend value is not a valid number at line : {}".format(line))
+		print (entry[2])
 		return -1
 
 
@@ -146,7 +146,7 @@ def get_board_from_entry(board_entry, line, board):
 	elif(entry[3] == "0"):
 		little_endian = 0
 	else:
-		print "is_little_endian value is not a valid number at line : {}".format(line)
+		print ("is_little_endian value is not a valid number at line : {}".format(line))
 		return -1
 
 	board.set_params(board_name, offset, extend, little_endian)
@@ -163,18 +163,18 @@ def get_message_from_entry(message_entry, line, mes):
 	entry = message_entry.split(",")
 
 	if (len(entry) != 2):
-		print "Not enough parameters at line: {}".format(line)
+		print ("Not enough parameters at line: {}".format(line))
 		return
 
 	message_name = entry[0]
 	if(re.match("[^A-Za-z0-9_ ]", message_name)):
-		print "Bad Signal name at line: {}".format(line)
+		print ("Bad Signal name at line: {}".format(line))
 		return -1
 
 	try:
 		message_id = int(entry[1], 16)
 	except:
-		print "Message ID is not a number at line: {}".format(line)
+		print ("Message ID is not a number at line: {}".format(line))
 		return -1
 
 	mes.set_params(message_name, message_id)

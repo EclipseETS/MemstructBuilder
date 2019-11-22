@@ -58,11 +58,11 @@ class boards:
 			mes.print_message_def(fo, self.name, self.little_endian)
 
 	def print_debug(self):
-		print self.name
-		print self.offset
-		print self.extend
-		print self.little_endian
-		print self.message_cnt
+		print (self.name)
+		print (self.offset)
+		print (self.extend)
+		print (self.little_endian)
+		print (self.message_cnt)
 
 		for mes in self.message:
 			mes.print_debug()

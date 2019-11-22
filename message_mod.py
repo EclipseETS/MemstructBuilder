@@ -66,9 +66,9 @@ class message:
 		fo.write("        },\n")
 
 	def print_debug(self):
-		print self.name
-		print self.id
-		print self.signal_cnt
+		print (self.name)
+		print (self.id)
+		print (self.signal_cnt)
 
 		for sig in self.signal:
 			sig.print_debug()
