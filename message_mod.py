@@ -24,9 +24,9 @@ class message:
 
 	def print_enum(self, fo, last_id):
 		if (last_id + 1 == self.id):
-			fo.write("\t{},\n".format(self.name))
+			fo.write("        {},\n".format(self.name))
 		else:
-			fo.write("\t{} = {},\n".format(self.name, self.id))
+			fo.write("        {} = {},\n".format(self.name, self.id))
 		last_id = self.id
 
 	def print_para_macro(self, fo, last):
@@ -38,11 +38,11 @@ class message:
 				sig.print_para_macro(fo, 0)
 
 	def print_message_def(self, fo, board_name, little_endian):
-		fo.write("\t{\n")
-		fo.write("\t\tID_OFFSET_{} + {}, /* CAN-Identifier */\n".format(board_name, self.name))
-		fo.write("\t\tM_{}_TXRX, /* Message Type */\n".format(board_name))
+		fo.write("        {\n")
+		fo.write("                ID_OFFSET_{} + {}, /* CAN-Identifier */\n".format(board_name, self.name))
+		fo.write("                M_{}_TXRX, /* Message Type */\n".format(board_name))
 
-		fo.write("\t\t")
+		fo.write("                ")
 		for index, sig in enumerate(self.signal, start = 1):
 			if(index == self.signal_cnt):
 				fo.write("sizeof({}),".format(sig.type))
@@ -50,8 +50,8 @@ class message:
 				fo.write("sizeof({}) + ".format(sig.type))
 		fo.write(" /* DLC of Message */\n")
 
-		fo.write("\t\t{}, /* No. of Links */\n".format(self.signal_cnt))
-		fo.write("\t\t{\n")
+		fo.write("                {}, /* No. of Links */\n".format(self.signal_cnt))
+		fo.write("                {\n")
 
 		byte_pos = "0"
 
@@ -62,8 +62,8 @@ class message:
 				sig.print_definition(fo, byte_pos, 0, little_endian)
 			byte_pos = byte_pos + " + sizeof({})".format(sig.type)
 
-		fo.write("\t\t}\n")
-		fo.write("\t},\n")
+		fo.write("                }\n")
+		fo.write("        },\n")
 
 	def print_debug(self):
 		print self.name

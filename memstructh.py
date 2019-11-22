@@ -17,11 +17,15 @@ def generate(board_list):
 	fo.write("/* This file was generate by EclipseMemstructGen.py*/\n")
 	fo.write("#ifndef MEMSTRUCT_H_\n")
 	fo.write("#define MEMSTRUCT_H_\n\n")
+	fo.write("#ifndef E92_EXCLUDE_MAIN_MEMSTRUCT\n\n")
 	fo.write('#include <stddef.h>\n\n')
 	fo.write('#include "can_cfg.h"\n')
 	fo.write('#include "can_sig.h"\n')
 	fo.write('#include "can_msg.h"\n')
 	fo.write('#include "can_frm.h"\n\n')
+	fo.write("#ifdef E92_USE_CUSTOM_MEMSTRUCT\n")
+	fo.write('       #include "custom_memstruct.h"\n')
+	fo.write("#endif\n")
 	fo.write('#include "service_can_callbacks.h"\n\n')
 	fo.write('#define CANFRM_EXTENDED_ID  (1<<29)\n')
 	fo.write('#define CANFRM_RTR          (1<<30)\n\n')
@@ -47,6 +51,9 @@ def generate(board_list):
 	for board in board_list:
 		board.print_header(fo)
 		board.print_signal_enum(fo)
+	fo.write("\n#ifdef E92_USE_CUSTOM_MEMSTRUCT\n")
+	fo.write("        S_CUSTOM_SIGNALS_ID\n")
+	fo.write("#endif\n")
 	fo.write("};\n")
 
 	#Generate Message List
@@ -62,7 +69,8 @@ def generate(board_list):
 	for board in board_list:
 		cnt += board.message_cnt
 
-	fo.write("#define M_MAX\t\t {}\n\n".format(cnt))
+	fo.write("#define M_MAX                 {}\n\n".format(cnt))
+	fo.write("#endif /*E92_EXCLUDE_MAIN_MEMSTRUCT*/\n")
 	fo.write("#endif\n")
 	fo.close()
 

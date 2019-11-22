@@ -111,6 +111,7 @@ def get_board_from_entry(board_entry, line, board):
 
 	board_entry = board_entry.replace("\t", "")
 	board_entry = board_entry.replace("\n", "")
+	board_entry = board_entry.replace("\r", "")
 	board_entry = board_entry.replace(" ", "")
 
 	entry = board_entry.split(",")

@@ -20,7 +20,7 @@ class boards:
 
 	def print_header(self, fo):
 		fo.write("/*******************************************************************/\n")
-		fo.write("/*							{}									*/\n".format(self.name))
+		fo.write("/*                                                        {}                                                                        */\n".format(self.name))
 		fo.write("/********************************************************************/\n")
 
 	def print_callback(self, fo):
@@ -29,9 +29,9 @@ class boards:
 
 	def print_enum(self, fo):
 		if self.extend:
-			fo.write("\tID_OFFSET_{} = 0x{:02X}L | CANFRM_EXTENDED_ID,\n".format(self.name, self.offset))
+			fo.write("        ID_OFFSET_{} = 0x{:02X}L | CANFRM_EXTENDED_ID,\n".format(self.name, self.offset))
 		else:
-			fo.write("\tID_OFFSET_{} = 0x{:02X},\n".format(self.name, self.offset))
+			fo.write("        ID_OFFSET_{} = 0x{:02X},\n".format(self.name, self.offset))
 
 	def print_signal_enum(self, fo):
 		for mes in self.message:
@@ -42,7 +42,7 @@ class boards:
 		for mes in self.message:
 			mes.print_enum(fo, last_id)
 			last_id = mes.id
-		fo.write("\tM_MAX_{} = {},\n".format(self.name, self.message_cnt))
+		fo.write("        M_MAX_{} = {},\n".format(self.name, self.message_cnt))
 
 	def print_para_macro(self, fo, last):
 		for mes in self.message:
@@ -50,7 +50,7 @@ class boards:
 
 	def print_txrx(self, fo):
 		fo.write("#ifndef M_{}_TXRX\n".format(self.name))
-		fo.write("#\tdefine M_{}_TXRX CANMSG_RX\n".format(self.name))
+		fo.write("#        define M_{}_TXRX CANMSG_RX\n".format(self.name))
 		fo.write("#endif\n")
 
 	def print_message_def(self, fo):
