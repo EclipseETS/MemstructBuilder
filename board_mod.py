@@ -20,7 +20,7 @@ class boards:
 
 	def print_header(self, fo):
 		fo.write("/*******************************************************************/\n")
-		fo.write("/*                                                        {}                                                                        */\n".format(self.name))
+		fo.write("/*      {}      */\n".format(self.name))
 		fo.write("/********************************************************************/\n")
 
 	def print_callback(self, fo):
@@ -44,6 +44,12 @@ class boards:
 			last_id = mes.id
 		fo.write("        M_MAX_{} = {},\n".format(self.name, self.message_cnt))
 
+	def print_message_enum_telemetry(self, fo):
+		last_id = -100
+		for mes in self.message:
+			mes.print_enum_full_id(fo, last_id, self)
+			last_id = mes.id + self.offset;
+
 	def print_para_macro(self, fo, last):
 		for mes in self.message:
 			mes.print_para_macro(fo, last)
@@ -56,6 +62,10 @@ class boards:
 	def print_message_def(self, fo):
 		for mes in self.message:
 			mes.print_message_def(fo, self.name, self.little_endian)
+
+	def print_message_def_telemetry(self, fo):
+		for mes in self.message:
+			mes.print_message_def_telemetry(fo, self.name, self.little_endian)
 
 	def print_debug(self):
 		print (self.name)

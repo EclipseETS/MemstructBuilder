@@ -29,6 +29,15 @@ class message:
 			fo.write("        {} = {},\n".format(self.name, self.id))
 		last_id = self.id
 
+	def print_enum_full_id(self, fo, last_id, board):
+		if (last_id + 1 == board.offset + self.id):
+			fo.write("        {},\n".format(self.name))
+		elif (self.id == 0):
+			fo.write("        {} = ID_OFFSET_{},\n".format(self.name, board.name))
+		else:
+			fo.write("        {} = {}+ID_OFFSET_{},\n".format(self.name, self.id, board.name))
+		last_id = board.offset + self.id
+
 	def print_para_macro(self, fo, last):
 		cnt = len(self.signal)
 		for index, sig in enumerate(self.signal, start = 1):
@@ -62,6 +71,37 @@ class message:
 				sig.print_definition(fo, byte_pos, 0, little_endian)
 			byte_pos = byte_pos + " + sizeof({})".format(sig.type)
 
+		fo.write("                }\n")
+		fo.write("        },\n")
+
+	def print_message_def_telemetry(self, fo, board_name, little_endian):
+		fo.write("        {\n")
+		fo.write("                {}, /* CAN-Identifier */\n".format(self.name))
+		fo.write("                {\n")
+		fo.write("                        {}, /* CAN-Identifier */\n".format(self.name))
+		fo.write("                        ")
+		for index, sig in enumerate(self.signal, start = 1):
+			if(index == self.signal_cnt):
+				fo.write("sizeof({}),".format(sig.type))
+			else:
+				fo.write("sizeof({}) + ".format(sig.type))
+		fo.write(" /* DLC of Message */\n")
+		fo.write("                        ")
+		fo.write("\"{}\",".format(self.name))
+		fo.write(" /* Name of Message */\n")
+		fo.write("                        {}, /* No. of Links */\n".format(self.signal_cnt))
+		fo.write("                        {\n")
+
+		byte_pos = "0"
+
+		for index, sig in enumerate(self.signal, start = 1):
+			if(index == self.signal_cnt):
+				sig.print_definition_telemetry(fo, byte_pos, 1, little_endian)
+			else:
+				sig.print_definition_telemetry(fo, byte_pos, 0, little_endian)
+			byte_pos = byte_pos + " + sizeof({})".format(sig.type)
+
+		fo.write("                        }\n")
 		fo.write("                }\n")
 		fo.write("        },\n")
 

@@ -7,6 +7,7 @@ from signal_mod import signal
 from board_mod import boards
 import memstructh
 import memstructc
+import telemetryMemstructh
 import xmlGen
 import dbGen
 
@@ -66,3 +67,5 @@ memstructc.generate(board_list)
 xmlGen.generate(board_list)
 
 dbGen.generate(board_list)
+
+telemetryMemstructh.generate(board_list)

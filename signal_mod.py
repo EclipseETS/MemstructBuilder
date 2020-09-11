@@ -62,6 +62,30 @@ class signal:
 		else:
 			fo.write("                        },\n")
 
+	def print_definition_telemetry(self, fo, byte_pos, last, little_endian):
+		fo.write("                                {\n")
+		fo.write("                                        {},   /* Signal ID */\n".format(self.name))
+		fo.write("                                        \"{}\",   /* Signal Name */\n".format(self.name))
+
+		fo.write("                                        TYPE_{},   /* Signal ID */\n".format(self.type))
+
+		if(little_endian):
+			fo.write("                                        {},   /* Byte Position */\n".format(byte_pos))
+		else:
+			fo.write("                                        {},   /* Byte Position */\n".format(byte_pos))
+
+		fo.write("                                        sizeof({}),   /* sizeof */\n".format(self.type))
+
+		if(little_endian):
+			fo.write("                                        L_ENDIAN,   /* Endianness */\n")
+		else:
+			fo.write("                                        B_ENDIAN,   /* Endianness */\n")
+
+		if(last):
+			fo.write("                                }\n")
+		else:
+			fo.write("                                },\n")
+
 
 	def print_debug(self):
 		print (self.name)
