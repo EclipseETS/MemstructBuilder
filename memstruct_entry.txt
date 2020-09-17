@@ -180,11 +180,11 @@ s:S_IGNITION_STATUS1, U8, 0, 1, 0, n/a, 0, 255
 b:FLASHER, 0x900, 1, 0
 
 m:M_FLASHER_TOP, 0x00
-s:S_FLASHER_STATUS, U16, 0, 1, 0, n/a, 0, 65532
-s:S_FLASHER_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
-m:M_FLASHER_BOT, 0x00
-s:S_FLASHER_STATUS, U16, 0, 1, 0, n/a, 0, 65532
-s:S_FLASHER_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
+s:S_FLASHER_1_STATUS, U16, 0, 1, 0, n/a, 0, 65532
+s:S_FLASHER_1_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
+m:M_FLASHER_BOT, 0x01
+s:S_FLASHER_2_STATUS, U16, 0, 1, 0, n/a, 0, 65532
+s:S_FLASHER_2_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
 
 /*******************************************************************/
 /*							MuPPeT	    */
