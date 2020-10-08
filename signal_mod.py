@@ -64,23 +64,29 @@ class signal:
 
 	def print_definition_telemetry(self, fo, byte_pos, last, little_endian):
 		fo.write("                                {\n")
+        
+		# Signal ID
 		fo.write("                                        {},   /* Signal ID */\n".format(self.name))
+		# Signal name
 		fo.write("                                        \"{}\",   /* Signal Name */\n".format(self.name))
-
-		fo.write("                                        TYPE_{},   /* Signal ID */\n".format(self.type))
-
-		if(little_endian):
-			fo.write("                                        {},   /* Byte Position */\n".format(byte_pos))
-		else:
-			fo.write("                                        {},   /* Byte Position */\n".format(byte_pos))
-
+		# Signal Type (uint32_t, uint16_t, uint8_t, float, etc..)
+		fo.write("                                        TYPE_{},   /* Signal Type */\n".format(self.type))
+		# Byte offset of signal
+		fo.write("                                        {},   /* Byte Position */\n".format(byte_pos))
+		# Size of signal
 		fo.write("                                        sizeof({}),   /* sizeof */\n".format(self.type))
-
+		# Endianess of signal
 		if(little_endian):
 			fo.write("                                        L_ENDIAN,   /* Endianness */\n")
 		else:
 			fo.write("                                        B_ENDIAN,   /* Endianness */\n")
-
+		# Multiplier factor of signal
+		# .x -> f, else -> .0f
+		if (isinstance(self.factor, int)):
+			fo.write("                                        {}.0f,   /* Multiplier */\n".format(self.factor))
+		else:
+			fo.write("                                        {}f,   /* Multiplier */\n".format(self.factor))
+        
 		if(last):
 			fo.write("                                }\n")
 		else:

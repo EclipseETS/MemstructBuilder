@@ -86,6 +86,7 @@ def generate(board_list):
     fo.write("        uint32_t byte_pos;\n")
     fo.write("        uint32_t size;\n")
     fo.write("        uint8_t endianness;\n")
+    fo.write("        float multiplier;\n")
     fo.write("};\n\n")
     
     # Print defintion of CAN message decode struct
