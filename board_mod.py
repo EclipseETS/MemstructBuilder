@@ -17,55 +17,72 @@ class boards:
 	def add_message(self, message):
 		self.message.append(message)
 		self.message_cnt += 1
+		
+	def print_header(self):
+		return (
+			f"/*******************************************************************/\n"
+			f"/*      {self.name}      */\n"
+			f"/********************************************************************/\n"
+		)
 
-	def print_header(self, fo):
-		fo.write("/*******************************************************************/\n")
-		fo.write("/*      {}      */\n".format(self.name))
-		fo.write("/********************************************************************/\n")
-
-	def print_callback(self, fo):
+	def print_callback(self):
+		str = ""
 		for mes in self.message:
-			mes.print_callback(fo)
-
-	def print_enum(self, fo):
+			str += mes.print_callback()
+		return str
+			
+	def print_enum(self):
 		if self.extend:
-			fo.write("        ID_OFFSET_{} = 0x{:02X}L | CANFRM_EXTENDED_ID,\n".format(self.name, self.offset))
+			return("        ID_OFFSET_{} = 0x{:02X}L | CANFRM_EXTENDED_ID,\n".format(self.name, self.offset))
 		else:
-			fo.write("        ID_OFFSET_{} = 0x{:02X},\n".format(self.name, self.offset))
+			return("        ID_OFFSET_{} = 0x{:02X},\n".format(self.name, self.offset))
 
-	def print_signal_enum(self, fo):
+	def print_signal_enum(self):
+		str = ""
 		for mes in self.message:
-			mes.print_signal_enum(fo)
+			str += mes.print_signal_enum()
+		return str
 
-	def print_message_enum(self, fo):
+	def print_message_enum(self):
 		last_id = -100
+		str = ""
 		for mes in self.message:
-			mes.print_enum(fo, last_id)
+			str += mes.print_enum(last_id)
 			last_id = mes.id
-		fo.write("        M_MAX_{} = {},\n".format(self.name, self.message_cnt))
+		return (str + f"        M_MAX_{self.name} = {self.message_cnt},\n")
 
-	def print_message_enum_telemetry(self, fo):
+	def print_message_enum_telemetry(self):
 		last_id = -100
+		str = ""
 		for mes in self.message:
-			mes.print_enum_full_id(fo, last_id, self)
+			str += mes.print_enum_full_id(last_id, self)
 			last_id = mes.id + self.offset;
+		return str
 
-	def print_para_macro(self, fo, last):
+	def print_para_macro(self, last):
+		str = ""
 		for mes in self.message:
-			mes.print_para_macro(fo, last)
+			str += mes.print_para_macro(last)
+		return str
 
-	def print_txrx(self, fo):
-		fo.write("#ifndef M_{}_TXRX\n".format(self.name))
-		fo.write("#        define M_{}_TXRX CANMSG_RX\n".format(self.name))
-		fo.write("#endif\n")
+	def print_txrx(self):
+		return (
+			f"#ifndef M_{self.name}_TXRX\n"
+			f"#        define M_{self.name}_TXRX CANMSG_RX\n"
+			f"#endif\n"
+		)
 
-	def print_message_def(self, fo):
+	def print_message_def(self):
+		str = ""
 		for mes in self.message:
-			mes.print_message_def(fo, self.name, self.little_endian)
+			str += mes.print_message_def(self.name, self.little_endian)
+		return str
 
-	def print_message_def_telemetry(self, fo):
+	def print_message_def_telemetry(self):
+		str = ""
 		for mes in self.message:
-			mes.print_message_def_telemetry(fo, self.name, self.little_endian)
+			str += mes.print_message_def_telemetry(self.name, self.little_endian)
+		return str
 
 	def print_debug(self):
 		print (self.name)

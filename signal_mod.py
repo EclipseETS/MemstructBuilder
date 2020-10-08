@@ -27,70 +27,141 @@ class signal:
 		self.signed = issigned
 		self.float = isfloat
 
-	def print_callback(self, fo):
-		fo.write("#ifndef {}_callback\n".format(self.name))
-		fo.write("#        define {}_callback NULL\n".format(self.name))
-		fo.write("#endif\n")
+	def print_callback(self):
+		#fo.write(f"#ifndef {self.name}_callback\n")
+		#fo.write(f"#        define {self.name}_callback NULL\n")
+		#fo.write(f"#endif\n")
+		return (
+			f"#ifndef {self.name}_callback\n"
+			f"#        define {self.name}_callback NULL\n"
+			f"#endif\n"
+		)
 
-	def print_enum(self, fo):
-		fo.write("        {},\n".format(self.name))
+	def print_enum(self):
+		return (
+			f"        {self.name},\n"
+		)
 
-	def print_para_macro(self, fo, last):
+	def print_para_macro(self, last):
 		if(last):
-			fo.write("        CAN_PARA_MACRO({}, sizeof({}), {}, {}_callback),\n\n".format(self.name, self.type, self.init_value, self.name))
-			fo.write("#ifdef E92_USE_CUSTOM_MEMSTRUCT\n")
-			fo.write("/*******************************************************************/\n")
-			fo.write("/*                                                    CUSTOM CAN                                                         */\n")
-			fo.write("/********************************************************************/\n")
-			fo.write("        CUSTOM_CAN_SIG,\n")
-			fo.write("#endif\n\n")
+			#fo.write(f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n\n")
+			#fo.write(f"#ifdef E92_USE_CUSTOM_MEMSTRUCT\n")
+			#fo.write(f"/*******************************************************************/\n")
+			#fo.write(f"/*                                                    CUSTOM CAN                                                         */\n")
+			#fo.write(f"/********************************************************************/\n")
+			#fo.write(f"        CUSTOM_CAN_SIG,\n")
+			#fo.write(f"#endif\n\n")
+			return (
+				f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n\n"
+				f"#ifdef E92_USE_CUSTOM_MEMSTRUCT\n"
+				f"/*******************************************************************/\n"
+				f"/*                                                    CUSTOM CAN                                                         */\n"
+				f"/********************************************************************/\n"
+				f"        CUSTOM_CAN_SIG,\n"
+				f"#endif\n\n"
+			)
 		else:
-			fo.write("        CAN_PARA_MACRO({}, sizeof({}), {}, {}_callback),\n".format(self.name, self.type, self.init_value, self.name))
+			#fo.write(f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n")
+			return (
+				f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n"
+			)
 
-	def print_definition(self, fo, byte_pos, last, little_endian):
-		fo.write("                        {\n")
-		fo.write("                                {},       /* Signal ID */\n".format(self.name))
-
+	def print_definition(self, byte_pos, last, little_endian):
+		#fo.write(f"                        {\n")
+		#fo.write(f"                                {self.name},       /* Signal ID */\n")
+		str = (
+			f"                        {{\n"
+			f"                                {self.name},       /* Signal ID */\n"
+		)
+		#fo.write(str)
 
 		if(little_endian):
-			fo.write("(                                {})|(CANFRM_LITTLE_ENDIAN)                                       /* Byte Position */\n".format(byte_pos))
+			#fo.write(f"(                                {byte_pos})|(CANFRM_LITTLE_ENDIAN)                                       /* Byte Position */\n")
+			str += (
+				f"(                                {byte_pos})|(CANFRM_LITTLE_ENDIAN)                                       /* Byte Position */\n"
+			)
 		else:
-			fo.write("                                {}                                       /* Byte Position */\n".format(byte_pos))
-
+			#fo.write(f"                                {byte_pos}                                       /* Byte Position */\n")
+			str += (
+				f"                                {byte_pos}                                       /* Byte Position */\n"
+			)
+			
 		if(last):
-			fo.write("                        }\n")
+			#fo.write(f"                        }\n")
+			str += (
+				f"                        }}\n"
+			)
 		else:
-			fo.write("                        },\n")
+			#fo.write(f"                        },\n")
+			str += (
+				f"                        }},\n"
+			)
+		return str
 
-	def print_definition_telemetry(self, fo, byte_pos, last, little_endian):
-		fo.write("                                {\n")
+	def print_definition_telemetry(self, byte_pos, last, little_endian):
+		#fo.write(f"                                {\n")
         
 		# Signal ID
-		fo.write("                                        {},   /* Signal ID */\n".format(self.name))
+		#fo.write(f"                                        {self.name},   /* Signal ID */\n")
 		# Signal name
-		fo.write("                                        \"{}\",   /* Signal Name */\n".format(self.name))
+		#fo.write(f"                                        \"{self.name}\",   /* Signal Name */\n")
 		# Signal Type (uint32_t, uint16_t, uint8_t, float, etc..)
-		fo.write("                                        TYPE_{},   /* Signal Type */\n".format(self.type))
+		#fo.write(f"                                        TYPE_{self.type},   /* Signal Type */\n")
 		# Byte offset of signal
-		fo.write("                                        {},   /* Byte Position */\n".format(byte_pos))
+		#fo.write(f"                                        {byte_pos},   /* Byte Position */\n")
 		# Size of signal
-		fo.write("                                        sizeof({}),   /* sizeof */\n".format(self.type))
+		#fo.write(f"                                        sizeof({self.type}),   /* sizeof */\n")
+		str = (
+			f"                                {{\n"
+			# Signal ID
+			f"                                        {self.name},   /* Signal ID */\n"
+			# Signal name
+			f"                                        \"{self.name}\",   /* Signal Name */\n"
+			# Signal Type (uint32_t, uint16_t, uint8_t, float, etc..)
+			f"                                        TYPE_{self.type},   /* Signal Type */\n"
+			# Byte offset of signal
+			f"                                        {byte_pos},   /* Byte Position */\n"
+			# Size of signal
+			f"                                        sizeof({self.type}),   /* sizeof */\n"
+		)
+		#fo.write(str)
+		
 		# Endianess of signal
 		if(little_endian):
-			fo.write("                                        L_ENDIAN,   /* Endianness */\n")
+			#fo.write(f"                                        L_ENDIAN,   /* Endianness */\n")
+			str += (
+				f"                                        L_ENDIAN,   /* Endianness */\n"
+			)
 		else:
-			fo.write("                                        B_ENDIAN,   /* Endianness */\n")
+			#fo.write(f"                                        B_ENDIAN,   /* Endianness */\n")
+			str += (
+				f"                                        B_ENDIAN,   /* Endianness */\n"
+			)
+			
 		# Multiplier factor of signal
 		# .x -> f, else -> .0f
 		if (isinstance(self.factor, int)):
-			fo.write("                                        {}.0f,   /* Multiplier */\n".format(self.factor))
+			#fo.write(f"                                        {self.factor}.0f,   /* Multiplier */\n")
+			str += (
+				f"                                        {self.factor}.0f,   /* Multiplier */\n"
+			)
 		else:
-			fo.write("                                        {}f,   /* Multiplier */\n".format(self.factor))
+			#fo.write(f"                                        {self.factor}f,   /* Multiplier */\n")
+			str += (
+				f"                                        {self.factor}f,   /* Multiplier */\n"
+			)
         
 		if(last):
-			fo.write("                                }\n")
+			#fo.write(f"                                }\n")
+			str += (
+				f"                                }}\n"
+			)
 		else:
-			fo.write("                                },\n")
+			#fo.write(f"                                },\n")
+			str += (
+				f"                                }},\n"
+			)
+		return str
 
 
 	def print_debug(self):

@@ -31,116 +31,120 @@ s_name_index = 0
 initial_value = "0"
 deviceitem_list = []
 
-# Create XML output file
-fo = open("memstruct_entry.txt", "w+")
+# Create TXT output file
+with open("memstruct_entry_gen.txt", "w+") as fo:
 
-# Open XML document using minidom parser
-DOMTree = xml.dom.minidom.parse("protocolV8.xml")
-collection = DOMTree.documentElement
+	# Open XML document using minidom parser
+	DOMTree = xml.dom.minidom.parse("protocolV8.xml")
+	collection = DOMTree.documentElement
 
-# Get all the movies in the collection
-devices = collection.getElementsByTagName("device")
+	# Get all the movies in the collection
+	devices = collection.getElementsByTagName("device")
 
-# Print detail of each movie.
-for device in devices:
-	m_name_index = 0
-	s_name_index = 0
-	print ("*****device*****")
-	#id_board = device.getAttribute("id")
-	#print "id:=%s" % id_board
-	name = device.getAttribute("name")
-	print ("name:=%s" % name)
+	# Print detail of each movie.
+	str = ""
+	for device in devices:
+		m_name_index = 0
+		s_name_index = 0
+		str += f"*****device*****\n"
+		#id_board = device.getAttribute("id")
+		#print "id:=%s" % id_board
+		name = device.getAttribute("name")
+		str += f"name:={name}\n"
 
-	trames = device.getElementsByTagName('trame')
-	for trame in trames:
-		print ("*****trame*****")
-		identifier = trame.getAttribute("identifier")
-		print ("identifier=%s" % identifier)
-		type = trame.getAttribute("type")
-		print ("type=%s" % type)
-		msg_offset = "0x" + identifier[1:3].upper()
-		board_id = "0x" + identifier[0] + "00"
-		if (trame == trames[0]):
-			if (board_id == "0x100" or board_id == "0x200" or board_id == "0x300"):
-				is_extended = "0"
-				is_little_endian = "1"
+		trames = device.getElementsByTagName('trame')
+		for trame in trames:
+			str += "*****trame*****\n"
+			identifier = trame.getAttribute("identifier")
+			str += "identifier={identifier}"
+			type = trame.getAttribute("type")
+			str += f"type={type}"
+			msg_offset = "0x" + identifier[1:3].upper()
+			board_id = "0x" + identifier[0] + "00"
+			if (trame == trames[0]):
+				if (board_id == "0x100" or board_id == "0x200" or board_id == "0x300"):
+					is_extended = "0"
+					is_little_endian = "1"
+				else:
+					is_extended = "1"
+					is_little_endian = "0"
+
+				if board_id == "0x100":
+					board_name = "DRIVER"
+					board_index = 0
+				elif board_id == "0x200":
+					board_name = "DRIVE"
+					board_index = 1
+				elif board_id == "0x300":
+					board_name = "BMS"
+					board_index = 2
+				elif board_id == "0x400":
+					board_name = "FLASHERS"
+					board_index = 3
+				elif board_id == "0x500":
+					board_name = "VOLANT"
+					board_index = 4
+				elif board_id == "0x600":
+					board_name = "INSTRU"
+					board_index = 5
+				elif board_id == "0x700":
+					board_name = "POWERSUPPLY"
+					board_index = 6
+				str += f"\nb: + {board_name}, {board_id}, {is_extended}, {is_little_endian}\n"
+			
+			str += f"\n"
+			str += "m:{m_name[board_index][m_name_index]}, {msg_offset}\n"
+			m_name_index = m_name_index + 1
+
+			deviceitems = trame.getElementsByTagName('deviceitem')
+			for deviceitem in deviceitems:
+				str += f"*****deviceitem*****\n"
+				id = deviceitem.getAttribute("id")
+				str += f"id={id}"
+				unit = deviceitem.getElementsByTagName('unit')[0].childNodes[0].data
+				str += f"unit={unit}"
+				bitsize = deviceitem.getElementsByTagName('bitsize')[0].childNodes[0].data
+				str += f"bitsize={bitsize}"
+				minvalue = deviceitem.getElementsByTagName('minvalue')[0].childNodes[0].data
+				str += f"minvalue={minvalue}"
+				maxvalue = deviceitem.getElementsByTagName('maxvalue')[0].childNodes[0].data
+				str += f"maxvalue={maxvalue}"
+				resolution = deviceitem.getElementsByTagName('resolution')[0].childNodes[0].data
+				str += f"resolution={resolution}"
+				factor = deviceitem.getElementsByTagName('factor')[0].childNodes[0].data
+				str += f"factor={factor}"
+				offset = deviceitem.getElementsByTagName('offset')[0].childNodes[0].data
+				str += f"offset={offset}"
+				signed = deviceitem.getElementsByTagName('signed')[0].childNodes[0].data
+				str += f"signed={signed}"
+				isFloat = deviceitem.getElementsByTagName('isFloat')[0].childNodes[0].data
+				str += f"isFloat={isFloat}"
+				if (isFloat == "true"):
+					data_type = "F"
+				else:
+					if (bitsize == "8" and signed == "true"):
+						data_type = "8"
+					elif (bitsize == "16" and signed == "true"):
+						data_type = "16"
+					elif (bitsize == "32" and signed == "true"):
+						data_type = "32"
+					elif (bitsize == "8" and signed == "false"):
+						data_type = "U8"
+					elif (bitsize == "16" and signed == "false"):
+						data_type = "U16"
+					elif (bitsize == "32" and signed == "false"):
+						data_type = "U32"
+
+				deviceitem_list.append(f"s:{s_name[board_index][s_name_index]}, {data_type}, {initial_value}, {factor}, {offset}, {unit}, {minvalue}, {maxvalue}\n")
+				s_name_index = s_name_index + 1
+
+			if (is_little_endian == "1"):
+				for item in reversed(deviceitem_list):
+					str += item
 			else:
-				is_extended = "1"
-				is_little_endian = "0"
+				for item in deviceitem_list:
+					str += item
 
-			if board_id == "0x100":
-				board_name = "DRIVER"
-				board_index = 0
-			elif board_id == "0x200":
-				board_name = "DRIVE"
-				board_index = 1
-			elif board_id == "0x300":
-				board_name = "BMS"
-				board_index = 2
-			elif board_id == "0x400":
-				board_name = "FLASHERS"
-				board_index = 3
-			elif board_id == "0x500":
-				board_name = "VOLANT"
-				board_index = 4
-			elif board_id == "0x600":
-				board_name = "INSTRU"
-				board_index = 5
-			elif board_id == "0x700":
-				board_name = "POWERSUPPLY"
-				board_index = 6
-
-			fo.write("\nb:" + board_name + ", " + board_id + ", " + is_extended + ", " + is_little_endian + "\n")
-		fo.write("\n" + "m:" + m_name[board_index][m_name_index] + ", " + msg_offset + "\n")
-		m_name_index = m_name_index + 1
-
-		deviceitems = trame.getElementsByTagName('deviceitem')
-		for deviceitem in deviceitems:
-			print ("*****deviceitem*****")
-			id = deviceitem.getAttribute("id")
-			print ("id=%s" % id)
-			unit = deviceitem.getElementsByTagName('unit')[0].childNodes[0].data
-			print ("unit=%s" % unit)
-			bitsize = deviceitem.getElementsByTagName('bitsize')[0].childNodes[0].data
-			print ("bitsize=%s" % bitsize)
-			minvalue = deviceitem.getElementsByTagName('minvalue')[0].childNodes[0].data
-			print ("minvalue=%s" % minvalue)
-			maxvalue = deviceitem.getElementsByTagName('maxvalue')[0].childNodes[0].data
-			print ("maxvalue=%s" % maxvalue)
-			resolution = deviceitem.getElementsByTagName('resolution')[0].childNodes[0].data
-			print ("resolution=%s" % resolution)
-			factor = deviceitem.getElementsByTagName('factor')[0].childNodes[0].data
-			print ("factor=%s" % factor)
-			offset = deviceitem.getElementsByTagName('offset')[0].childNodes[0].data
-			print ("offset=%s" % offset)
-			signed = deviceitem.getElementsByTagName('signed')[0].childNodes[0].data
-			print ("signed=%s" % signed)
-			isFloat = deviceitem.getElementsByTagName('isFloat')[0].childNodes[0].data
-			print ("isFloat=%s" % isFloat)
-			if (isFloat == "true"):
-				data_type = "F"
-			else:
-				if (bitsize == "8" and signed == "true"):
-					data_type = "8"
-				elif (bitsize == "16" and signed == "true"):
-					data_type = "16"
-				elif (bitsize == "32" and signed == "true"):
-					data_type = "32"
-				elif (bitsize == "8" and signed == "false"):
-					data_type = "U8"
-				elif (bitsize == "16" and signed == "false"):
-					data_type = "U16"
-				elif (bitsize == "32" and signed == "false"):
-					data_type = "U32"
-
-			deviceitem_list.append("s:" + s_name[board_index][s_name_index] + ", " + data_type + ", " + initial_value + ", " + factor + ", " + offset + ", " + unit + ", " + minvalue + ", " + maxvalue + "\n")
-			s_name_index = s_name_index + 1
-
-		if (is_little_endian == "1"):
-			for item in reversed(deviceitem_list):
-				fo.write(item)
-		else:
-			for item in deviceitem_list:
-				fo.write(item)
-
-		del deviceitem_list[:]
+			del deviceitem_list[:]
+	
+	fo.write(str)
