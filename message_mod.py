@@ -62,10 +62,6 @@ class message:
 			f"                "
 			f""
 		)
-		#fo.write(f"        {{\n")
-		#fo.write(f"                ID_OFFSET_{board_name} + {self.name}, /* CAN-Identifier */\n")
-		#fo.write(f"                M_{board_name}_TXRX, /* Message Type */\n")
-		#fo.write(f"                ")
 		
 		for index, sig in enumerate(self.signal, start = 1):
 			if(index == self.signal_cnt):
@@ -78,9 +74,6 @@ class message:
 			f"                {self.signal_cnt}, /* No. of Links */\n"
 			f"                {{\n"
 		)
-		#fo.write(f" /* DLC of Message */\n")
-		#fo.write(f"                {self.signal_cnt}, /* No. of Links */\n")
-		#fo.write(f"                {{\n")
 
 		byte_pos = "0"
 
@@ -95,8 +88,6 @@ class message:
 			f"                }}\n"
 			f"        }},\n"
 		)
-		#fo.write(f"                }}\n")
-		#fo.write(f"        }},\n")
 		return str
 
 	def print_message_def_telemetry(self, board_name, little_endian):
@@ -120,42 +111,21 @@ class message:
 			f"                        {self.signal_cnt}, /* No. of Links */\n"
 			f"                        {{\n"
 		)
-		#fo.write(f"        {{\n")
-		#fo.write(f"                {self.name}, /* CAN-Identifier */\n")
-		#fo.write(f"                {{\n")
-		#fo.write(f"                        {self.name}, /* CAN-Identifier */\n")
-		#fo.write(f"                        ")
-		#for index, sig in enumerate(self.signal, start = 1):
-		#	if(index == self.signal_cnt):
-		#		fo.write(f"sizeof({sig.type}),")
-		#	else:
-		#		fo.write(f"sizeof({sig.type}) + ")
-		#fo.write(f" /* DLC of Message */\n")
-		#fo.write(f"                        ")
-		#fo.write(f"\"{self.name}\",")
-		#fo.write(f" /* Name of Message */\n")
-		#fo.write(f"                        {self.signal_cnt}, /* No. of Links */\n")
-		#fo.write(f"                        {{\n")
 
 		byte_pos = f"0"
-
-		#sig_definition_str = ""
+		
 		for index, sig in enumerate(self.signal, start = 1):
 			if(index == self.signal_cnt):
 				str += sig.print_definition_telemetry(byte_pos, 1, little_endian)
 			else:
 				str += sig.print_definition_telemetry(byte_pos, 0, little_endian)
 			byte_pos = byte_pos + f" + sizeof({sig.type})"
-		#str += sig_definition
 		
 		str += (
 			f"                        }}\n"
 			f"                }}\n"
 			f"        }},\n"
 		)
-		#fo.write(f"                        }}\n")
-		#fo.write(f"                }}\n")
-		#fo.write(f"        }},\n")
 		return str
 
 	def print_debug(self):

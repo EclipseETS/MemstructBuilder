@@ -28,9 +28,6 @@ class signal:
 		self.float = isfloat
 
 	def print_callback(self):
-		#fo.write(f"#ifndef {self.name}_callback\n")
-		#fo.write(f"#        define {self.name}_callback NULL\n")
-		#fo.write(f"#endif\n")
 		return (
 			f"#ifndef {self.name}_callback\n"
 			f"#        define {self.name}_callback NULL\n"
@@ -38,19 +35,10 @@ class signal:
 		)
 
 	def print_enum(self):
-		return (
-			f"        {self.name},\n"
-		)
+		return (f"        {self.name},\n")
 
 	def print_para_macro(self, last):
 		if(last):
-			#fo.write(f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n\n")
-			#fo.write(f"#ifdef E92_USE_CUSTOM_MEMSTRUCT\n")
-			#fo.write(f"/*******************************************************************/\n")
-			#fo.write(f"/*                                                    CUSTOM CAN                                                         */\n")
-			#fo.write(f"/********************************************************************/\n")
-			#fo.write(f"        CUSTOM_CAN_SIG,\n")
-			#fo.write(f"#endif\n\n")
 			return (
 				f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n\n"
 				f"#ifdef E92_USE_CUSTOM_MEMSTRUCT\n"
@@ -61,56 +49,26 @@ class signal:
 				f"#endif\n\n"
 			)
 		else:
-			#fo.write(f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n")
-			return (
-				f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n"
-			)
+			return (f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), {self.init_value}, {self.name}_callback),\n")
 
 	def print_definition(self, byte_pos, last, little_endian):
-		#fo.write(f"                        {\n")
-		#fo.write(f"                                {self.name},       /* Signal ID */\n")
 		str = (
 			f"                        {{\n"
 			f"                                {self.name},       /* Signal ID */\n"
 		)
-		#fo.write(str)
-
+		
 		if(little_endian):
-			#fo.write(f"(                                {byte_pos})|(CANFRM_LITTLE_ENDIAN)                                       /* Byte Position */\n")
-			str += (
-				f"(                                {byte_pos})|(CANFRM_LITTLE_ENDIAN)                                       /* Byte Position */\n"
-			)
+			str += f"(                                {byte_pos})|(CANFRM_LITTLE_ENDIAN)                                       /* Byte Position */\n"
 		else:
-			#fo.write(f"                                {byte_pos}                                       /* Byte Position */\n")
-			str += (
-				f"                                {byte_pos}                                       /* Byte Position */\n"
-			)
+			str += f"                                {byte_pos}                                       /* Byte Position */\n"
 			
 		if(last):
-			#fo.write(f"                        }\n")
-			str += (
-				f"                        }}\n"
-			)
+			str += f"                        }}\n"
 		else:
-			#fo.write(f"                        },\n")
-			str += (
-				f"                        }},\n"
-			)
+			str += f"                        }},\n"
 		return str
 
 	def print_definition_telemetry(self, byte_pos, last, little_endian):
-		#fo.write(f"                                {\n")
-        
-		# Signal ID
-		#fo.write(f"                                        {self.name},   /* Signal ID */\n")
-		# Signal name
-		#fo.write(f"                                        \"{self.name}\",   /* Signal Name */\n")
-		# Signal Type (uint32_t, uint16_t, uint8_t, float, etc..)
-		#fo.write(f"                                        TYPE_{self.type},   /* Signal Type */\n")
-		# Byte offset of signal
-		#fo.write(f"                                        {byte_pos},   /* Byte Position */\n")
-		# Size of signal
-		#fo.write(f"                                        sizeof({self.type}),   /* sizeof */\n")
 		str = (
 			f"                                {{\n"
 			# Signal ID
@@ -124,43 +82,25 @@ class signal:
 			# Size of signal
 			f"                                        sizeof({self.type}),   /* sizeof */\n"
 		)
-		#fo.write(str)
 		
 		# Endianess of signal
 		if(little_endian):
-			#fo.write(f"                                        L_ENDIAN,   /* Endianness */\n")
-			str += (
-				f"                                        L_ENDIAN,   /* Endianness */\n"
-			)
+			str += f"                                        L_ENDIAN,   /* Endianness */\n"
 		else:
-			#fo.write(f"                                        B_ENDIAN,   /* Endianness */\n")
-			str += (
-				f"                                        B_ENDIAN,   /* Endianness */\n"
-			)
+			str += f"                                        B_ENDIAN,   /* Endianness */\n"
 			
 		# Multiplier factor of signal
-		# .x -> f, else -> .0f
+		# x.y -> f, else (int) -> .0f
 		if (isinstance(self.factor, int)):
-			#fo.write(f"                                        {self.factor}.0f,   /* Multiplier */\n")
-			str += (
-				f"                                        {self.factor}.0f,   /* Multiplier */\n"
-			)
+			str += f"                                        {self.factor}.0f,   /* Multiplier */\n"
 		else:
-			#fo.write(f"                                        {self.factor}f,   /* Multiplier */\n")
-			str += (
-				f"                                        {self.factor}f,   /* Multiplier */\n"
-			)
+			str += f"                                        {self.factor}f,   /* Multiplier */\n"
         
 		if(last):
-			#fo.write(f"                                }\n")
-			str += (
-				f"                                }}\n"
-			)
+			str += f"                                }}\n"
 		else:
-			#fo.write(f"                                },\n")
-			str += (
-				f"                                }},\n"
-			)
+			str += f"                                }},\n"
+		
 		return str
 
 
