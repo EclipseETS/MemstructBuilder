@@ -33,7 +33,6 @@ class Message:
 			string = f"        {self.name},\n"
 		else:
 			string = f"        {self.name} = {self.id},\n"
-		last_id = self.id
 		return string
 
 	def print_enum_full_id(self, last_id, board):
@@ -43,7 +42,6 @@ class Message:
 			string = f"        {self.name} = ID_OFFSET_{board.name}"
 		else:
 			string = f"        {self.name} = {self.id}+ID_OFFSET_{board.name}"
-		last_id = board.offset + self.id
 		return string
 
 	def print_para_macro(self, last):

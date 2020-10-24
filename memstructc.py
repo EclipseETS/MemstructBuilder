@@ -49,7 +49,7 @@ def generate(board_list):
 			final_output += board.print_txrx()
 		final_output += f"\n\n"
 
-		# Generate mesage definition
+		# Generate message definition
 		board_messages = []
 		for board in board_list:
 			message_def_str = board.print_header()
