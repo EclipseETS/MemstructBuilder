@@ -1,4 +1,4 @@
-class message:
+class Message:
 
 	def __init__(self):
 		self.name = ""
@@ -14,61 +14,117 @@ class message:
 		self.signal.append(signal)
 		self.signal_cnt += 1
 
-	def print_callback(self, fo):
+	def print_callback(self):
+		callbacks = []
 		for sig in self.signal:
-			sig.print_callback(fo)
+			callbacks.append(sig.print_callback())
+		string = '\n'.join(callbacks)
+		return string
 
-	def print_signal_enum(self, fo):
+	def print_signal_enum(self):
+		signal_enum = []
 		for sig in self.signal:
-			sig.print_enum(fo)
+			signal_enum.append(sig.print_enum())
+		string = ',\n'.join(signal_enum)
+		return string
 
-	def print_enum(self, fo, last_id):
-		if (last_id + 1 == self.id):
-			fo.write("        {},\n".format(self.name))
+	def print_enum(self, last_id):
+		if last_id + 1 == self.id:
+			string = f"        {self.name},\n"
 		else:
-			fo.write("        {} = {},\n".format(self.name, self.id))
-		last_id = self.id
+			string = f"        {self.name} = {self.id},\n"
+		return string
 
-	def print_para_macro(self, fo, last):
+	def print_enum_full_id(self, last_id, board):
+		if last_id + 1 == board.offset + self.id:
+			string = f"        {self.name}"
+		elif self.id == 0:
+			string = f"        {self.name} = ID_OFFSET_{board.name}"
+		else:
+			string = f"        {self.name} = {self.id}+ID_OFFSET_{board.name}"
+		return string
+
+	def print_para_macro(self, last):
 		cnt = len(self.signal)
-		for index, sig in enumerate(self.signal, start = 1):
-			if(last and cnt == index):
-				sig.print_para_macro(fo, 1)
+		para_macro = []
+		for index, sig in enumerate(self.signal, start=1):
+			if last and cnt == index:
+				para_macro.append(sig.print_para_macro(1))
 			else:
-				sig.print_para_macro(fo, 0)
+				para_macro.append(sig.print_para_macro(0))
+		string = ',\n'.join(para_macro)
+		return string
 
-	def print_message_def(self, fo, board_name, little_endian):
-		fo.write("        {\n")
-		fo.write("                ID_OFFSET_{} + {}, /* CAN-Identifier */\n".format(board_name, self.name))
-		fo.write("                M_{}_TXRX, /* Message Type */\n".format(board_name))
-
-		fo.write("                ")
-		for index, sig in enumerate(self.signal, start = 1):
-			if(index == self.signal_cnt):
-				fo.write("sizeof({}),".format(sig.type))
+	def print_message_def(self, board_name, little_endian):
+		string = (
+			f"        {{\n"
+			f"                ID_OFFSET_{board_name} + {self.name}, /* CAN-Identifier */\n"
+			f"                M_{board_name}_TXRX, /* Message Type */\n"
+			f"                "
+			f""
+		)
+		
+		for index, sig in enumerate(self.signal, start=1):
+			if index == self.signal_cnt:
+				string += f"sizeof({sig.type}),"
 			else:
-				fo.write("sizeof({}) + ".format(sig.type))
-		fo.write(" /* DLC of Message */\n")
-
-		fo.write("                {}, /* No. of Links */\n".format(self.signal_cnt))
-		fo.write("                {\n")
+				string += f"sizeof({sig.type}) + "
+		
+		string += (
+			f" /* DLC of Message */\n"
+			f"                {self.signal_cnt}, /* No. of Links */\n"
+			f"                {{\n"
+		)
 
 		byte_pos = "0"
 
-		for index, sig in enumerate(self.signal, start = 1):
-			if(index == self.signal_cnt):
-				sig.print_definition(fo, byte_pos, 1, little_endian)
+		for index, sig in enumerate(self.signal, start=1):
+			if index == self.signal_cnt:
+				string += sig.print_definition(byte_pos, 1, little_endian)
 			else:
-				sig.print_definition(fo, byte_pos, 0, little_endian)
-			byte_pos = byte_pos + " + sizeof({})".format(sig.type)
+				string += sig.print_definition(byte_pos, 0, little_endian)
+			byte_pos = byte_pos + f" + sizeof({sig.type})"
 
-		fo.write("                }\n")
-		fo.write("        },\n")
+		string += (
+			f"                }}\n"
+			f"        }}"
+		)
+		return string
 
-	def print_debug(self):
-		print (self.name)
-		print (self.id)
-		print (self.signal_cnt)
+	def print_message_def_telemetry(self, little_endian):
+		signals_str = ""
+		for index, sig in enumerate(self.signal, start=1):
+			if index == self.signal_cnt:
+				signals_str += f"sizeof({sig.type}),"
+			else:
+				signals_str += f"sizeof({sig.type}) + "
+		string = (
+			f"        {{\n"
+			f"                {self.name}, /* CAN-Identifier */\n"
+			f"                {{\n"
+			f"                        {self.name}, /* CAN-Identifier */\n"
+			f"                        "
+			f"{signals_str}"
+			f" /* DLC of Message */\n"
+			f"                        "
+			f"\"{self.name}\","
+			f" /* Name of Message */\n"
+			f"                        {self.signal_cnt}, /* No. of Links */\n"
+			f"                        {{\n"
+		)
 
-		for sig in self.signal:
-			sig.print_debug()
+		byte_pos = f"0"
+		
+		for index, sig in enumerate(self.signal, start=1):
+			if index == self.signal_cnt:
+				string += sig.print_definition_telemetry(byte_pos, 1, little_endian)
+			else:
+				string += sig.print_definition_telemetry(byte_pos, 0, little_endian)
+			byte_pos = byte_pos + f" + sizeof({sig.type})"
+		
+		string += (
+			f"                        }}\n"
+			f"                }}\n"
+			f"        }}"
+		)
+		return string

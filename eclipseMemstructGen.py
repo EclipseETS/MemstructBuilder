@@ -1,68 +1,64 @@
 import memparser
 import sys
 import os
-import pdb
-from message_mod import message
-from signal_mod import signal
-from board_mod import boards
+
+from message_mod import Message
+from signal_mod import Signal
+from board_mod import Board
 import memstructh
 import memstructc
-import xmlGen
+import telemetryMemstructh
 import dbGen
 
-raw_entry = open("memstruct_entry.txt")
+with open("memstruct_entry.txt") as raw_entry:
 
-board_list = []
-first_board = 1
-first_mes = 1
-signal_cnt = 0
+	board_list = []
+	first_board = 1
+	first_mes = 1
+	signal_cnt = 0
 
-#parse each entry
-for index, line in enumerate(raw_entry, start = 1):
-	if(line.startswith("b:")): #board
-		line = line.upper()
-		line = line[2:]
+	# parse each entry
+	for index, line in enumerate(raw_entry, start=1):
+		code, sep, params = line.partition(':')
+		params = params.upper()
+		if code == 'b':
+			# Board
+			board = Board()
+			memparser.get_board_from_entry(params, index, board)
+			if board == -1:
+				sys.exit()
+			board_list.append(board)
 
-		board = boards()
-		memparser.get_board_from_entry(line, index, board)
-		if(board == -1):
-			sys.exit()
-		board_list.append(board)
+		elif code == 'm':
+			# Message
+			mes = Message()
+			memparser.get_message_from_entry(params, index, mes)
+			if mes == -1:
+				sys.exit()
+			board.add_message(mes)
 
-	elif(line.startswith("m:")): #message
-		line = line.upper()
-		line = line[2:]
+		elif code == 's':
+			# Signal
+			sig = Signal()
+			memparser.get_signal_from_entry(params, index, signal_cnt, sig)
+			if sig == -1:
+				sys.exit()
+			signal_cnt += 1
+			mes.add_signal(sig)
 
-		mes = message()
-		memparser.get_message_from_entry(line, index, mes)
-		if(mes == -1):
-			sys.exit()
-		board.add_message(mes)
+		else:
+			continue
 
-	elif(line.startswith("s:")): #signal
-		line = line.upper()
-		line = line[2:]
-		sig = signal()
-		memparser.get_signal_from_entry(line, index, signal_cnt, sig)
-		if(sig == -1):
-			sys.exit()
-		signal_cnt += 1
-		mes.add_signal(sig)
+	# Create output folder for generated files
+	try:
+		os.mkdir("output")
+	except OSError:
+		pass
 
-	else:
-		continue 
-
-
-#Get Global Definition file(opt)
-
-try:
-	os.mkdir("output")
-except:
-	pass
-
-memstructh.generate(board_list)
-memstructc.generate(board_list)
-
-xmlGen.generate(board_list)
-
-dbGen.generate(board_list)
+	# Microcontroller CAN description files
+	memstructh.generate(board_list)
+	memstructc.generate(board_list)
+	# CAN Vector Analyzer DB CAN description file
+	dbGen.generate(board_list)
+	# Telemetry backend CAN memstruct file
+	telemetryMemstructh.generate(board_list)
