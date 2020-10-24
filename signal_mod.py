@@ -32,11 +32,11 @@ class Signal:
         return (
             f"#ifndef {self.name}_callback\n"
             f"#        define {self.name}_callback NULL\n"
-            f"#endif\n"
+            f"#endif"
         )
 
     def print_enum(self):
-        return f"        {self.name},\n"
+        return f"        {self.name}"
 
     def print_para_macro(self, last):
         if last:
@@ -49,11 +49,11 @@ class Signal:
                 f"/*                           CUSTOM CAN                            */\n"
                 f"/*******************************************************************/\n"
                 f"        CUSTOM_CAN_SIG,\n"
-                f"#endif\n\n"
+                f"#endif"
             )
         else:
             return f"        CAN_PARA_MACRO({self.name}, sizeof({self.type}), " \
-                   f"{self.init_value}, {self.name}_callback),\n"
+                   f"{self.init_value}, {self.name}_callback)"
 
     def print_definition(self, byte_pos, last, little_endian):
         string = (
@@ -106,12 +106,3 @@ class Signal:
             string += f"                                }},\n"
 
         return string
-
-    def print_debug(self):
-        print(self.name)
-        print(self.id)
-        print(self.type)
-        print(self.init_value)
-        print(self.factor)
-        print(self.offset)
-        print(self.unit)

@@ -26,21 +26,23 @@ class Board:
 		return string
 
 	def print_callback(self):
-		string = ""
+		callbacks = []
 		for mes in self.message:
-			string += mes.print_callback()
+			callbacks.append(mes.print_callback())
+		string = '\n'.join(callbacks)
 		return string
 			
 	def print_enum(self):
 		if self.extend:
-			return "        ID_OFFSET_{} = 0x{:02X}L | CANFRM_EXTENDED_ID,\n".format(self.name, self.offset)
+			return "        ID_OFFSET_{} = {:#02x}L | CANFRM_EXTENDED_ID".format(self.name, self.offset)
 		else:
-			return "        ID_OFFSET_{} = 0x{:02X},\n".format(self.name, self.offset)
+			return "        ID_OFFSET_{} = {:#02x}".format(self.name, self.offset)
 
 	def print_signal_enum(self):
-		string = ""
+		signal_enum = []
 		for mes in self.message:
-			string += mes.print_signal_enum()
+			signal_enum.append(mes.print_signal_enum())
+		string = ',\n'.join(signal_enum)
 		return string
 
 	def print_message_enum(self):
@@ -49,20 +51,22 @@ class Board:
 		for mes in self.message:
 			string += mes.print_enum(last_id)
 			last_id = mes.id
-		return string + f"        M_MAX_{self.name} = {self.message_cnt},\n"
+		return string + f"        M_MAX_{self.name} = {self.message_cnt}"
 
 	def print_message_enum_telemetry(self):
 		last_id = -100
-		string = ""
+		message_enums = []
 		for mes in self.message:
-			string += mes.print_enum_full_id(last_id, self)
+			message_enums.append(mes.print_enum_full_id(last_id, self))
 			last_id = mes.id + self.offset
+		string = ',\n'.join(message_enums)
 		return string
 
 	def print_para_macro(self, last):
-		string = ""
+		para_strings = []
 		for mes in self.message:
-			string += mes.print_para_macro(last)
+			para_strings.append(mes.print_para_macro(last))
+		string = ',\n'.join(para_strings)
 		return string
 
 	def print_txrx(self):
@@ -73,23 +77,15 @@ class Board:
 		)
 
 	def print_message_def(self):
-		string = ""
+		message_strings = []
 		for mes in self.message:
-			string += mes.print_message_def(self.name, self.little_endian)
+			message_strings.append(mes.print_message_def(self.name, self.little_endian))
+		string = ',\n'.join(message_strings)
 		return string
 
 	def print_message_def_telemetry(self):
-		string = ""
+		message_defs = []
 		for mes in self.message:
-			string += mes.print_message_def_telemetry(self.little_endian)
+			message_defs.append(mes.print_message_def_telemetry(self.little_endian))
+		string = ',\n'.join(message_defs)
 		return string
-
-	def print_debug(self):
-		print(self.name)
-		print(self.offset)
-		print(self.extend)
-		print(self.little_endian)
-		print(self.message_cnt)
-
-		for mes in self.message:
-			mes.print_debug()

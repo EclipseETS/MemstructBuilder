@@ -3,7 +3,7 @@ def generate(board_list):
 
     with open("output/CAN_DB_E10.dbc", "w") as fo:
 
-        string = (
+        final_output = (
             f'VERSION ""\n'
             f'\n'
             f'\n'
@@ -66,7 +66,7 @@ def generate(board_list):
                 for signal in message.signal:
                     dlc = dlc + (int(signal.bitsize) / 8)
 
-                string += f"BO_ {board_id} {message.name}: {dlc} Vector__XXX\n"
+                final_output += f"BO_ {board_id} {message.name}: {dlc} Vector__XXX\n"
 
                 for signal in message.signal:
                     # Signed
@@ -83,18 +83,18 @@ def generate(board_list):
                     if signal.float == "true":
                         float_footer.append(f"SIG_VALTYPE_ {board_id} {signal.name} : 1;\n")
 
-                    string += f' SG_ {signal.name} : {signal_offset}|{signal.bitsize}@{endianess}{signed} ({signal.factor},{signal.offset}) [{signal.minvalue}|{signal.maxvalue}] "{signal.unit}" Vector__XXX\n'
+                    final_output += f' SG_ {signal.name} : {signal_offset}|{signal.bitsize}@{endianess}{signed} ({signal.factor},{signal.offset}) [{signal.minvalue}|{signal.maxvalue}] "{signal.unit}" Vector__XXX\n'
                     signal_offset = signal_offset + int(signal.bitsize)
 
-                string += f'\n'
-        string += (
+                final_output += f'\n'
+        final_output += (
             f'\n'
             f'\n'
             f'BA_DEF_  "BusType" STRING ;\n'
             f'BA_DEF_DEF_  "BusType" "";\n'
         )
         for entry in float_footer:
-            string += f"{entry}"
-        string += f'\n'
+            final_output += f"{entry}"
+        final_output += f'\n'
 
-        fo.write(string)
+        fo.write(final_output)

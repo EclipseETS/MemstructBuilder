@@ -15,15 +15,17 @@ class Message:
 		self.signal_cnt += 1
 
 	def print_callback(self):
-		string = ""
+		callbacks = []
 		for sig in self.signal:
-			string += sig.print_callback()
+			callbacks.append(sig.print_callback())
+		string = '\n'.join(callbacks)
 		return string
 
 	def print_signal_enum(self):
-		string = ""
+		signal_enum = []
 		for sig in self.signal:
-			string += sig.print_enum()
+			signal_enum.append(sig.print_enum())
+		string = ',\n'.join(signal_enum)
 		return string
 
 	def print_enum(self, last_id):
@@ -36,22 +38,23 @@ class Message:
 
 	def print_enum_full_id(self, last_id, board):
 		if last_id + 1 == board.offset + self.id:
-			string = f"        {self.name},\n"
+			string = f"        {self.name}"
 		elif self.id == 0:
-			string = f"        {self.name} = ID_OFFSET_{board.name},\n"
+			string = f"        {self.name} = ID_OFFSET_{board.name}"
 		else:
-			string = f"        {self.name} = {self.id}+ID_OFFSET_{board.name},\n"
+			string = f"        {self.name} = {self.id}+ID_OFFSET_{board.name}"
 		last_id = board.offset + self.id
 		return string
 
 	def print_para_macro(self, last):
 		cnt = len(self.signal)
-		string = ""
+		para_macro = []
 		for index, sig in enumerate(self.signal, start=1):
 			if last and cnt == index:
-				string += sig.print_para_macro(1)
+				para_macro.append(sig.print_para_macro(1))
 			else:
-				string += sig.print_para_macro(0)
+				para_macro.append(sig.print_para_macro(0))
+		string = ',\n'.join(para_macro)
 		return string
 
 	def print_message_def(self, board_name, little_endian):
@@ -86,7 +89,7 @@ class Message:
 
 		string += (
 			f"                }}\n"
-			f"        }},\n"
+			f"        }}"
 		)
 		return string
 
@@ -124,14 +127,6 @@ class Message:
 		string += (
 			f"                        }}\n"
 			f"                }}\n"
-			f"        }},\n"
+			f"        }}"
 		)
 		return string
-
-	def print_debug(self):
-		print(self.name)
-		print(self.id)
-		print(self.signal_cnt)
-
-		for sig in self.signal:
-			sig.print_debug()
