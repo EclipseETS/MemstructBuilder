@@ -10,9 +10,6 @@ s:S_DRIVER_MOTOR_CURRENT, F, 0, 100, 0, PC, -100, 100
 m:M_DRIVER_POWER_CMD, 0x02
 s:S_DRIVER_POWER_OFFSET, U32, 0, 1, 0, n/a, 0, 0
 s:S_DRIVER_BUS_CURRENT, F, 0, 100, 0, PC, 0, 100
-f:B_ERROR_OVERVOLTAGE, x, y, z,
-f:
-f:
 
 /*******************************************************************/
 /*							DRIVE									*/
