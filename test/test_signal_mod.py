@@ -1,4 +1,5 @@
 
+import itertools
 from signal_mod import Signal
 
 
@@ -68,13 +69,23 @@ def test_print_para_macro():
         signal.type = signal_type
         signal.init_value = init_value
 
-        last = False
-        test_string_not_last = f"        CAN_PARA_MACRO(test_name, sizeof({signal_type}), " \
-                               f"{init_value}, test_name_callback)"
-        str_result_not_last = signal.print_para_macro(last)
+        test_string = f"        CAN_PARA_MACRO(test_name, sizeof({signal_type}), " \
+                      f"{init_value}, test_name_callback)"
+        str_result = signal.print_para_macro(False)
 
-        last = True
-        test_string_last = (
+        assert str_result == test_string, f"print_para_macro() test failed with inputs signal_type = {signal_type} " \
+                                          f"and init value = {init_value}"
+
+
+def test_last_print_para_macro():
+    signal = Signal()
+    signal.name = "test_name"
+
+    for signal_type, init_value in {"U8": 255, "U16": 65000, "U32": 101, "F": 42.65}.items():
+        signal.type = signal_type
+        signal.init_value = init_value
+
+        test_string = (
             f"        CAN_PARA_MACRO(test_name, sizeof({signal_type}), "
             f"{init_value}, test_name_callback),\n"
             f"\n"
@@ -85,60 +96,73 @@ def test_print_para_macro():
             f"        CUSTOM_CAN_SIG,\n"
             f"#endif"
         )
-        str_result_last = signal.print_para_macro(last)
+        str_result = signal.print_para_macro(True)
 
-        assert str_result_not_last == test_string_not_last
-        assert str_result_last == test_string_last
+        assert str_result == test_string, f"print_para_macro() test failed with inputs signal_type = {signal_type} " \
+                                          f"and init value = {init_value}"
 
 
 def test_print_definition():
     signal = Signal()
     signal.name = "test_name"
 
-    for last in [False, True]:
-        for little_endian in [True, False]:  # [LITTLE, BIG]
-            for byte_pos in [0, 8, 16, 24, 32, 40, 48, 56]:
-                comma_separator = '' if last else ','
-                byte_pos_str = f"{byte_pos}" if not little_endian else \
-                               f"({byte_pos})|(CANFRM_LITTLE_ENDIAN)"
-                test_string = (
-                    f"                        {{\n"
-                    f"                                test_name,       /* Signal ID */\n"
-                    f"                                {byte_pos_str}  /* Byte Position */\n"
-                    f"                        }}{comma_separator}\n"
-                )
+    last_to_test = [False, True]
+    little_endian_to_test = [True, False]  # [LITTLE, BIG]
+    byte_pos_to_test = [8, 16]
 
-                str_result = signal.print_definition(byte_pos, last, little_endian)
-                assert str_result == test_string
+    values_to_test = itertools.product(last_to_test, little_endian_to_test, byte_pos_to_test)
+
+    for is_last, little_endian, byte_pos in values_to_test:
+        comma_separator = '' if is_last else ','
+        byte_pos_str = f"{byte_pos}" if not little_endian else \
+                       f"({byte_pos})|(CANFRM_LITTLE_ENDIAN)"
+        test_string = (
+            f"                        {{\n"
+            f"                                test_name,       /* Signal ID */\n"
+            f"                                {byte_pos_str}  /* Byte Position */\n"
+            f"                        }}{comma_separator}\n"
+        )
+
+        str_result = signal.print_definition(byte_pos, is_last, little_endian)
+        assert str_result == test_string, f"print_definition() test failed with inputs is_last = {is_last} " \
+                                          f", is_little_endian = {little_endian} and byte_pos = {byte_pos}"
 
 
 def test_print_definition_telemetry():
     signal = Signal()
     signal.name = "test_name"
 
-    for last in [False, True]:
-        for little_endian in [True, False]:  # [LITTLE, BIG]
-            for byte_pos in [0, 8, 16, 24, 32, 40, 48, 56]:
-                for signal_type, factor in {'U8': 200, 'U16': 64555, 'U32': 42, 'F': 42.76}.items():
-                    signal.type = signal_type
-                    signal.factor = factor
+    last_to_test = [False, True]
+    little_endian_to_test = [True, False]  # [LITTLE, BIG]
+    byte_pos_to_test = [8, 16]
+    factors_to_test = {'U8': 200, 'U16': 64555, 'U32': 42, 'F': 42.76}
 
-                    comma_separator = '' if last else ','
-                    endianness = 'L_ENDIAN' if little_endian else 'B_ENDIAN'
-                    factor_str = f'{factor}.0f' if signal_type is not 'F' else f'{factor}f'
+    values_to_test = itertools.product(last_to_test, little_endian_to_test, byte_pos_to_test,
+                                       factors_to_test.keys())
 
-                    test_string = (
-                        f"                                {{\n"
-                        f"                                        test_name,   /* Signal ID */\n"
-                        f"                                        \"test_name\",   /* Signal Name */\n"
-                        f"                                        TYPE_{signal_type},   /* Signal Type */\n"
-                        f"                                        {byte_pos},   /* Byte Position */\n"
-                        f"                                        sizeof({signal_type}),   /* sizeof */\n"
-                        f"                                        {endianness},   /* Endianness */\n"
-                        f"                                        {factor_str},   /* Multiplier */\n"
-                        f"                                }}{comma_separator}\n"
-                    )
+    for is_last, little_endian, byte_pos, signal_type in values_to_test:
+        signal.type = signal_type
+        signal.factor = factors_to_test[signal_type]
 
-                    str_result = signal.print_definition_telemetry(byte_pos, last, little_endian)
-                    assert str_result == test_string
+        comma_separator = '' if is_last else ','
+        endianness = 'L_ENDIAN' if little_endian else 'B_ENDIAN'
+        factor_str = f'{factors_to_test[signal_type]}.0f' if signal.type is not 'F' \
+            else f'{factors_to_test[signal_type]}f'
+
+        test_string = (
+            f"                                {{\n"
+            f"                                        test_name,   /* Signal ID */\n"
+            f"                                        \"test_name\",   /* Signal Name */\n"
+            f"                                        TYPE_{signal_type},   /* Signal Type */\n"
+            f"                                        {byte_pos},   /* Byte Position */\n"
+            f"                                        sizeof({signal_type}),   /* sizeof */\n"
+            f"                                        {endianness},   /* Endianness */\n"
+            f"                                        {factor_str},   /* Multiplier */\n"
+            f"                                }}{comma_separator}\n"
+        )
+
+        str_result = signal.print_definition_telemetry(byte_pos, is_last, little_endian)
+        assert str_result == test_string, f"print_definition_telemetry() test failed with inputs: is_last = {is_last}, " \
+                                          f"is little endian = {little_endian}, byte_pos = {byte_pos}, " \
+                                          f"signal type = {signal_type}, factor = {factors_to_test[signal_type]}"
 
