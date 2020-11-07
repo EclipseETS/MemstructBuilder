@@ -2,4 +2,4 @@ output/
 *.pyc
 .idea/
 .coverage
-
+test/output/

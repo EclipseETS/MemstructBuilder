@@ -1,7 +1,7 @@
 
-def generate(board_list):
+def generate(fname, board_list):
 
-    with open("output/CAN_DB_E10.dbc", "w") as fo:
+    with open(fname, "w") as fo:
 
         final_output = (
             f'VERSION ""\n'

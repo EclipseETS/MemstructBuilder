@@ -1,8 +1,8 @@
 
 
-def generate(board_list):
+def generate(fname, board_list):
 
-	with open("output/memstruct.h", "w") as fo:
+	with open(fname, "w") as fo:
 	
 		# Start with headers guards, includes and defines
 		final_output = (
