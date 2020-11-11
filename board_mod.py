@@ -5,8 +5,7 @@ class Board:
 		self.offset = 0
 		self.extend = 0
 		self.little_endian = 0
-		self.message = []
-		self.message_cnt = 0
+		self.messages = []
 		self.header_width = 70
 
 	def set_params(self, board_name, board_offset, board_extend, board_endian):
@@ -16,8 +15,7 @@ class Board:
 		self.little_endian = board_endian
 
 	def add_message(self, message):
-		self.message.append(message)
-		self.message_cnt += 1
+		self.messages.append(message)
 		
 	def print_header(self):
 		string = '/' + '*' * self.header_width + '/\n'
@@ -27,7 +25,7 @@ class Board:
 
 	def print_callback(self):
 		callbacks = []
-		for mes in self.message:
+		for mes in self.messages:
 			callbacks.append(mes.print_callback())
 		string = '\n'.join(callbacks)
 		return string
@@ -40,7 +38,7 @@ class Board:
 
 	def print_signal_enum(self):
 		signal_enum = []
-		for mes in self.message:
+		for mes in self.messages:
 			signal_enum.append(mes.print_signal_enum())
 		string = ',\n'.join(signal_enum)
 		return string
@@ -48,15 +46,15 @@ class Board:
 	def print_message_enum(self):
 		last_id = -100
 		string = ""
-		for mes in self.message:
+		for mes in self.messages:
 			string += mes.print_enum(last_id)
 			last_id = mes.id
-		return string + f"        M_MAX_{self.name} = {self.message_cnt}"
+		return string + f"        M_MAX_{self.name} = {len(self.messages)}"
 
 	def print_message_enum_telemetry(self):
 		last_id = -100
 		message_enums = []
-		for mes in self.message:
+		for mes in self.messages:
 			message_enums.append(mes.print_enum_full_id(last_id, self))
 			last_id = mes.id + self.offset
 		string = ',\n'.join(message_enums)
@@ -64,7 +62,7 @@ class Board:
 
 	def print_para_macro(self, last):
 		para_strings = []
-		for mes in self.message:
+		for mes in self.messages:
 			para_strings.append(mes.print_para_macro(last))
 		string = ',\n'.join(para_strings)
 		return string
@@ -78,14 +76,14 @@ class Board:
 
 	def print_message_def(self):
 		message_strings = []
-		for mes in self.message:
+		for mes in self.messages:
 			message_strings.append(mes.print_message_def(self.name, self.little_endian))
 		string = ',\n'.join(message_strings)
 		return string
 
 	def print_message_def_telemetry(self):
 		message_defs = []
-		for mes in self.message:
+		for mes in self.messages:
 			message_defs.append(mes.print_message_def_telemetry(self.little_endian))
 		string = ',\n'.join(message_defs)
 		return string

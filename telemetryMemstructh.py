@@ -130,7 +130,7 @@ def generate(fname, board_list):
 		# Get total number of CAN signals
 		num_can_messages = 0
 		for board in board_list:
-			num_can_messages = num_can_messages + board.message_cnt
+			num_can_messages += len(board.messages)
 		
 		# Signal full definition array
 		message_defs = []

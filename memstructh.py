@@ -90,7 +90,7 @@ def generate(fname, board_list):
 		# Define M_max
 		cnt = 0
 		for board in board_list:
-			cnt += board.message_cnt
+			cnt += len(board.messages)
 		final_output += (
 			f"#define M_MAX                 {cnt}\n"
 			f"\n"

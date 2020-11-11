@@ -112,7 +112,7 @@ def test_get_board_from_entry():
         assert board.little_endian == endianness
 
 
-def check_signal_report_error(capsys, name, datatype, init_value, factor, offset, unit_name, min_value, max_value):
+def assert_signal_report_error(capsys, name, datatype, init_value, factor, offset, unit_name, min_value, max_value):
     raw_line = f'{name}, {datatype}, {init_value}, {factor}, {offset}, {unit_name}, {min_value}, {max_value}'
     error_value = get_signal_from_entry(raw_line, 0, 0, Signal())
     out, err = capsys.readouterr()
@@ -131,25 +131,25 @@ def test_invalid_arguments_get_signal_from_entry(capsys):
     # Invalid characters like 'é' or '%'
     strings_to_test = ['%test%', '°test°', 'étesté', '-test-']
     for string in strings_to_test:
-        check_signal_report_error(capsys, string, 'U32', 0, 0, 0, 'RPM', -100, 100)
-        check_signal_report_error(capsys, 'test', 'U32', 0, 0, 0, string, -100, 100)
+        assert_signal_report_error(capsys, string, 'U32', 0, 0, 0, 'RPM', -100, 100)
+        assert_signal_report_error(capsys, 'test', 'U32', 0, 0, 0, string, -100, 100)
 
     # Test error reporting of a bad datatype
     types_to_test = ['U9', 'D', 'test']
     for datatype in types_to_test:
-        check_signal_report_error(capsys, 'test', datatype, 0, 0, 0, 'RPM', -100, 100)
+        assert_signal_report_error(capsys, 'test', datatype, 0, 0, 0, 'RPM', -100, 100)
 
     # Test init values, factors, offsets, min_values and max_values that are not ints
     values = ['abc', True]
     for value in values:
-        check_signal_report_error(capsys, 'test', 'U32', value, 0, 0, 'RPM', -100, 100)
-        check_signal_report_error(capsys, 'test', 'U32', 0, value, 0, 'RPM', -100, 100)
-        check_signal_report_error(capsys, 'test', 'U32', 0, 0, value, 'RPM', -100, 100)
-        check_signal_report_error(capsys, 'test', 'U32', 0, 0, 0, 'RPM', value, 100)
-        check_signal_report_error(capsys, 'test', 'U32', 0, 0, 0, 'RPM', -100, value)
+        assert_signal_report_error(capsys, 'test', 'U32', value, 0, 0, 'RPM', -100, 100)
+        assert_signal_report_error(capsys, 'test', 'U32', 0, value, 0, 'RPM', -100, 100)
+        assert_signal_report_error(capsys, 'test', 'U32', 0, 0, value, 'RPM', -100, 100)
+        assert_signal_report_error(capsys, 'test', 'U32', 0, 0, 0, 'RPM', value, 100)
+        assert_signal_report_error(capsys, 'test', 'U32', 0, 0, 0, 'RPM', -100, value)
 
 
-def check_message_report_error(capsys, name, message_id):
+def assert_message_report_error(capsys, name, message_id):
     raw_line = f'{name}, {message_id}'
     error_value = get_message_from_entry(raw_line, 0, Message())
     out, err = capsys.readouterr()
@@ -166,15 +166,15 @@ def test_invalid_arguments_get_message_from_entry(capsys):
     # Invalid characters like 'é' or '%'
     names_to_test = ['%test%', '°test°', 'étesté', '-test-']
     for name in names_to_test:
-        check_message_report_error(capsys, name, 0x100)
+        assert_message_report_error(capsys, name, 0x100)
 
     # Test message id not an int
     ids_to_test = [45.7, True]
     for message_id in ids_to_test:
-        check_message_report_error(capsys, 'test', message_id)
+        assert_message_report_error(capsys, 'test', message_id)
 
 
-def check_board_report_error(capsys, name, offset, extend, endianness):
+def assert_board_report_error(capsys, name, offset, extend, endianness):
     raw_line = f'{name}, {offset}, {extend}, {endianness}'
     error_value = get_board_from_entry(raw_line, 0, Board())
     out, err = capsys.readouterr()
@@ -192,16 +192,16 @@ def test_invalid_arguments_get_board_from_entry(capsys):
     # Test error reporting with invalid characters
     names_to_test = ['%test%', '°test°', 'étesté', '-test-']
     for name in names_to_test:
-        check_board_report_error(capsys, name, 0, 0, 0)
+        assert_board_report_error(capsys, name, 0, 0, 0)
 
     # Check invalid offsets errors
     offsets_to_test = [45.7, True]
     for offset in offsets_to_test:
-        check_board_report_error(capsys, 'test', {offset}, 0, 0)
+        assert_board_report_error(capsys, 'test', {offset}, 0, 0)
 
     # Check invalid extend or endianness bool (0, 1) errors
     bools_to_test = [-1, 2]
     for value in bools_to_test:
-        check_board_report_error(capsys, 'test', 0, {value}, 0)
-        check_board_report_error(capsys, 'test', 0, 0, {value})
+        assert_board_report_error(capsys, 'test', 0, {value}, 0)
+        assert_board_report_error(capsys, 'test', 0, 0, {value})
 

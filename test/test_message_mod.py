@@ -24,63 +24,72 @@ def test_add_signal():
     message.add_signal(signal1)
     message.add_signal(signal2)
 
-    assert message.signal_cnt == 2
-    assert message.signal[0] == signal1
-    assert message.signal[1] == signal2
+    assert len(message.signals) == 2
+    assert message.signals[0] == signal1
+    assert message.signals[1] == signal2
 
 
-def test_print_callback():
+def test_print_callback_should_not_end_with_newline_character():
     message = Message()
     message.add_signal(Signal())
     message.add_signal(Signal())
-    # Test that last character is not '\n'
-    assert message.print_callback()[-1] != '\n'
+    assert not message.print_callback().endswith('\n')
 
 
-def test_print_signal_enum():
+def test_print_signal_enum_should_not_end_with_newline_character():
     message = Message()
     message.add_signal(Signal())
     message.add_signal(Signal())
-    # Test that last character is not '\n'
-    assert message.print_signal_enum()[-1] != '\n'
+    assert not message.print_signal_enum().endswith('\n')
 
 
-def test_print_enum():
+def test_print_enum_with_message_id_is_not_following_last_message():
     message = Message()
     message.name = "test_name"
     message.id = 100
-
-    # Test with last_id == id - 1, (message follows)
-    test_string_next = f"        test_name,\n"
-    # Test with last_id not previous (message does not follow)
     test_string_not_next = f"        test_name = 100,\n"
 
-    # Id 99 is previous message
-    assert message.print_enum(99) == test_string_next
     # Id 98 is not previous message
     assert message.print_enum(98) == test_string_not_next
 
 
-def test_print_enum_full_id():
+def test_print_enum_with_message_id_is_following_last_message():
+    message = Message()
+    message.name = "test_name"
+    message.id = 100
+    test_string_next = f"        test_name,\n"
+
+    # Id 99 is previous message
+    assert message.print_enum(99) == test_string_next
+
+
+def create_board_with_message(message_id):
     board = Board()
     board.name = "test_board"
     message = Message()
-    message.id = 42
+    message.id = message_id
     message.name = "test_message"
     board.add_message(message)
+    return message, board
 
+
+def test_print_enum_full_id_with_message_is_following_last_message():
+    message, board = create_board_with_message(message_id=42)
     test_string_next = f"        test_message"
-    test_string_id_zero = f"        test_message = ID_OFFSET_test_board"
-    test_string_not_next = f"        test_message = 42+ID_OFFSET_test_board"
+    assert message.print_enum_full_id(last_id=41, board=board) == test_string_next
 
-    # Test message follows last message (not explicit index in string)
-    assert message.print_enum_full_id(41, board) == test_string_next
+
+def test_print_enum_full_id_with_message_not_following_last_but_has_id_zero():
+    message, board = create_board_with_message(message_id=0)
+    test_string_id_zero = f"        test_message = ID_OFFSET_test_board"
     # Test message does not follow, but is 0
-    message.id = 0
-    assert message.print_enum_full_id(56, board) == test_string_id_zero
-    # Test message does not follow nor is zero
-    message.id = 42
-    assert message.print_enum_full_id(4, board) == test_string_not_next
+    assert message.print_enum_full_id(last_id=56, board=board) == test_string_id_zero
+
+
+def test_print_enum_full_id_with_message_not_following_last_message_and_id_not_zero():
+    message, board = create_board_with_message(message_id=42)
+    test_string_not_next = f"        test_message = 42+ID_OFFSET_test_board"
+    assert message.print_enum_full_id(last_id=4, board=board) == test_string_not_next
 
 
 def create_test_message(num_signals):
@@ -97,12 +106,14 @@ def create_test_message(num_signals):
     return message
 
 
-def test_print_para_macro():
+def test_print_para_macro_with_last_true_should_not_end_with_newline_character():
     message = create_test_message(5)
+    assert not message.print_para_macro(True).endswith('\n')
 
-    # Make sure last character is not '\n'
-    assert message.print_para_macro(True)[-1] != '\n'
-    assert message.print_para_macro(False)[-1] != '\n'
+
+def test_print_para_macro_with_last_false_should_not_end_with_newline_character():
+    message = create_test_message(5)
+    assert not message.print_para_macro(False).endswith('\n')
 
 
 def test_print_message_def():
