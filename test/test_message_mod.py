@@ -31,15 +31,15 @@ def test_add_signal():
 
 def test_print_callback_should_not_end_with_newline_character():
     message = Message()
-    message.add_signal(Signal())
-    message.add_signal(Signal())
+    message.signals.append(Signal())
+    message.signals.append(Signal())
     assert not message.print_callback().endswith('\n')
 
 
 def test_print_signal_enum_should_not_end_with_newline_character():
     message = Message()
-    message.add_signal(Signal())
-    message.add_signal(Signal())
+    message.signals.append(Signal())
+    message.signals.append(Signal())
     assert not message.print_signal_enum().endswith('\n')
 
 
@@ -69,7 +69,7 @@ def create_board_with_message(message_id):
     message = Message()
     message.id = message_id
     message.name = "test_message"
-    board.add_message(message)
+    board.messages.append(message)
     return message, board
 
 
@@ -101,7 +101,7 @@ def create_test_message(num_signals):
         signal.type = 'U32'
         signal.id = i + 0x200
         signal.init_value = 0
-        message.add_signal(signal)
+        message.signals.append(signal)
 
     return message
 
@@ -129,8 +129,8 @@ def test_print_message_def():
     signal2.name = "signal2"
     signal2.type = "U8"
 
-    message.add_signal(signal1)
-    message.add_signal(signal2)
+    message.signals.append(signal1)
+    message.signals.append(signal2)
 
     little_endian_to_test = [True, False]  # [LITTLE, BIG]
     values_to_test = itertools.product(little_endian_to_test)
@@ -138,8 +138,6 @@ def test_print_message_def():
     # Testing that the addon 'CANFRM_LITTLE_ENDIAN' is added only if message is little_endian
     # Testing byte_pos calculation is correct (U8 + U32)
     for little_endian in values_to_test:
-        byte_pos = 0  # Byte pos for first signal
-        byte_pos_string = f'({byte_pos})|(CANFRM_LITTLE_ENDIAN)' if little_endian else f'{byte_pos}'
         test_string = (
             f"        {{\n"
             f"                ID_OFFSET_board_test + message_test, /* CAN-Identifier */\n"
@@ -152,8 +150,6 @@ def test_print_message_def():
             f"                                (0)|(CANFRM_LITTLE_ENDIAN)  /* Byte Position */\n"
             f"                        }},\n"
         )
-        byte_pos = f'0 + sizeof(U32)'  # Byte pos for second signal
-        byte_pos_string = f'({byte_pos})|(CANFRM_LITTLE_ENDIAN)' if little_endian else f'{byte_pos}'
         test_string += (
             f"                        {{\n"
             f"                                signal2,       /* Signal ID */\n"
@@ -182,8 +178,8 @@ def test_print_message_def_telemetry():
     signal2.name = "signal2"
     signal2.type = "U8"
 
-    message.add_signal(signal1)
-    message.add_signal(signal2)
+    message.signals.append(signal1)
+    message.signals.append(signal2)
 
     little_endian_to_test = [True, False]  # [LITTLE, BIG]
     values_to_test = itertools.product(little_endian_to_test)

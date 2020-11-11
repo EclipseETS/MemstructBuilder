@@ -24,18 +24,10 @@ def test_add_message():
     board = Board()
     message = Message()
 
-    board.add_message(message)
+    board.messages.append(message)
 
     assert len(board.messages) == 1
     assert board.messages[0] == message
-
-
-def test_print_header():
-    board = Board()
-    test_string = '/' + '*' * board.header_width + '/\n'
-    test_string += f'/*{board.name: ^{board.header_width - 2}}*/\n'
-    test_string += '/' + '*' * board.header_width + '/\n'
-    assert board.print_header() == test_string
 
 
 def create_message_with_signals(num_signals):
@@ -43,7 +35,7 @@ def create_message_with_signals(num_signals):
     for i in range(num_signals):
         signal = Signal()
         signal.name = f'Signal{i}'
-        message.add_signal(signal)
+        message.signals.append(signal)
     return message
 
 
@@ -52,19 +44,23 @@ def create_board_with_messages(num_messages, num_signals):
     for i in range(num_messages):
         message = create_message_with_signals(num_signals)
         message.name = f'Message{i}'
-        board.add_message(message)
+        board.messages.append(message)
     return board
 
 
-def test_print_callback_should_not_end_with_newline_character():
-    num_messages = 5
-    num_signals = 2
-    board = create_board_with_messages(num_messages, num_signals)
+def test_print_callback():
+    board = create_board_with_messages(num_messages=5, num_signals=2)
 
     test_string = ''
-    for i in range(num_messages - 1):
-        test_string += f'{board.messages[i].print_callback()}\n'
-    test_string += f'{board.messages[-1].print_callback()}'
+    for i in range(len(board.messages)):
+        for j in range(len(board.messages[i].signals)):
+            # Last signal entry should not have newline character
+            last_char = '\n' if not (i == len(board.messages) - 1 and j == len(board.messages[i].signals) - 1) else ''
+            test_string += (
+                f"#ifndef Signal{j}_callback\n"
+                f"#        define Signal{j}_callback NULL\n"
+                f"#endif{last_char}"
+            )
 
     assert board.print_callback() == test_string
 
@@ -76,7 +72,7 @@ def test_print_enum_with_extend_false():
     board.extend = False
 
     # Without extended id qualifier (CANFRM_EXTENDED_ID)
-    test_string = "        ID_OFFSET_{} = {:#02x}".format(board.name, board.offset)
+    test_string = "        ID_OFFSET_Board_1 = 0x200"
 
     assert board.print_enum() == test_string
 
@@ -88,19 +84,21 @@ def test_print_enum_with_extend_true():
     board.extend = True
 
     # With extended id qualifier (CANFRM_EXTENDED_ID)
-    test_string = "        ID_OFFSET_{} = {:#02x}L | CANFRM_EXTENDED_ID".format(board.name, board.offset)
+    test_string = "        ID_OFFSET_Board_2 = 0x500L | CANFRM_EXTENDED_ID"
 
     assert board.print_enum() == test_string
 
 
-def test_print_signal_enum_should_not_end_with_newline_character():
+def test_print_signal():
     board = create_board_with_messages(num_messages=5, num_signals=2)
 
     # Test that enum is spaced with ',\n' except last line
     test_string = ''
-    for i in range(len(board.messages) - 1):
-        test_string += f'{board.messages[i].print_signal_enum()},\n'
-    test_string += f'{board.messages[-1].print_signal_enum()}'
+    for i in range(len(board.messages)):
+        for j in range(len(board.messages[i].signals)):
+            # Last signal entry should not have newline character
+            last_char = ',\n' if not (i == len(board.messages) - 1 and j == len(board.messages[i].signals) - 1) else ''
+            test_string += f"        Signal{j}{last_char}"
 
     assert board.print_signal_enum() == test_string
 
@@ -113,12 +111,12 @@ def test_print_message_enum():
     board.messages[3].id = 36
     board.messages[4].id = 45
 
-    # Test that all messages are present in enum
-    test_string = ""
-    last_id = -100
-    for i in range(len(board.messages)):
-        test_string += f'{board.messages[i].print_enum(last_id)}'
-        last_id = board.messages[i].id
+    # Test that all messages are present in enum with proper ids
+    test_string = f"        Message0 = 30,\n"
+    test_string += f"        Message1 = 34,\n"
+    test_string += f"        Message2,\n"
+    test_string += f"        Message3,\n"
+    test_string += f"        Message4 = 45,\n"
     test_string += f"        M_MAX_{board.name} = {len(board.messages)}"
 
     assert board.print_message_enum() == test_string
