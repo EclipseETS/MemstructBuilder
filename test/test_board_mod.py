@@ -54,13 +54,13 @@ def test_print_callback():
     test_string = ''
     for i in range(len(board.messages)):
         for j in range(len(board.messages[i].signals)):
-            # Last signal entry should not have newline character
-            last_char = '\n' if not (i == len(board.messages) - 1 and j == len(board.messages[i].signals) - 1) else ''
             test_string += (
                 f"#ifndef Signal{j}_callback\n"
                 f"#        define Signal{j}_callback NULL\n"
-                f"#endif{last_char}"
+                f"#endif\n"
             )
+    # Last signal entry should not have newline character
+    test_string = test_string[:-1]
 
     assert board.print_callback() == test_string
 
@@ -96,9 +96,9 @@ def test_print_signal():
     test_string = ''
     for i in range(len(board.messages)):
         for j in range(len(board.messages[i].signals)):
-            # Last signal entry should not have newline character
-            last_char = ',\n' if not (i == len(board.messages) - 1 and j == len(board.messages[i].signals) - 1) else ''
-            test_string += f"        Signal{j}{last_char}"
+            test_string += f"        Signal{j},\n"
+    # Last signal entry should not have ',\n'
+    test_string = test_string[:-2]
 
     assert board.print_signal_enum() == test_string
 

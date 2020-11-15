@@ -1,5 +1,4 @@
 
-import sys
 import itertools
 from board_mod import Board
 from message_mod import Message
@@ -204,4 +203,3 @@ def test_invalid_arguments_get_board_from_entry(capsys):
     for value in bools_to_test:
         assert_board_report_error(capsys, 'test', 0, {value}, 0)
         assert_board_report_error(capsys, 'test', 0, 0, {value})
-
