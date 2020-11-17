@@ -1,0 +1,33 @@
+// Taken from memstruct_entry.txt
+// DO not use this file as it is not updated, only used for tests
+// Taken from version date : 05/11/20
+
+/*******************************************************************/
+/*							DRIVER									*/
+/********************************************************************/
+b:DRIVER, 0x100, 0, 1
+
+m:M_DRIVER_MOTOR_CMD, 0x01
+s:S_DRIVER_MOTOR_VELOCITY, F, 0, 1, 0, rpm, -1500, 1500
+s:S_DRIVER_MOTOR_CURRENT, F, 0, 100, 0, PC, -100, 100
+
+/*******************************************************************/
+/*							BMS									*/
+/********************************************************************/
+b:BMS, 0x300, 1, 0
+
+m:M_BMS_STATUS, 0x00
+s:S_BMS_STATUS, U16, 0, 1, 0, n/a, 0, 65532
+s:S_BMS_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647
+
+m:M_BMS_CURRENT, 0x01
+s:S_BMS_PACK_CURRENT, 32, 0, 0.001, 0, A, -60, 18
+
+/*******************************************************************/
+/*							DASHBOARD									*/
+/********************************************************************/
+b:DASHBOARD, 0x400, 1, 0
+
+m:M_DASHBOARD_STATUS, 0x00
+s:S_DASHBOARD_STATUS, U16, 0, 1, 0, n/a, 0, 65532
+s:S_DASHBOARD_OSTICK, U32, 0, 1, 0, tick, 0, 2147483647

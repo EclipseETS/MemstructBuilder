@@ -62,7 +62,7 @@ class Signal:
         )
 
         if little_endian:
-            string += f"(                                {byte_pos})|(CANFRM_LITTLE_ENDIAN)  /* Byte Position */\n"
+            string += f"                                ({byte_pos})|(CANFRM_LITTLE_ENDIAN)  /* Byte Position */\n"
         else:
             string += f"                                {byte_pos}  /* Byte Position */\n"
 

@@ -9,7 +9,7 @@ def get_signal_from_entry(raw_entry, line, signal_no, sig):
     entry = raw_entry.split(",")
 
     if len(entry) != 8:
-        print("Not enough or to much parameters at line: {}".format(line))
+        print("Not enough or too much parameters at line: {}".format(line))
         return -1
 
     signal_name = entry[0]
@@ -165,7 +165,7 @@ def get_message_from_entry(message_entry, line, mes):
 
     message_name = entry[0]
     if re.match("[^A-Za-z0-9_ ]", message_name):
-        print("Bad Signal name at line: {}".format(line))
+        print("Bad message name at line: {}".format(line))
         return -1
 
     try:

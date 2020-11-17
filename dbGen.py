@@ -1,7 +1,7 @@
 
-def generate(board_list):
+def generate(fname, board_list):
 
-    with open("output/CAN_DB_E10.dbc", "w") as fo:
+    with open(fname, "w") as fo:
 
         final_output = (
             f'VERSION ""\n'
@@ -46,7 +46,7 @@ def generate(board_list):
 
         float_footer = []
         for board in board_list:
-            for message in board.message:
+            for message in board.messages:
                 dlc = 0
 
                 # Signal offset
@@ -63,12 +63,12 @@ def generate(board_list):
                     board_id = board_id | 0x80000000
 
                 # DLC
-                for signal in message.signal:
+                for signal in message.signals:
                     dlc = dlc + (int(signal.bitsize) / 8)
 
                 final_output += f"BO_ {board_id} {message.name}: {dlc} Vector__XXX\n"
 
-                for signal in message.signal:
+                for signal in message.signals:
                     # Signed
                     if signal.signed == "true":
                         signed = "-"

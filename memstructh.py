@@ -1,8 +1,8 @@
 
 
-def generate(board_list):
+def generate(fname, board_list):
 
-	with open("output/memstruct.h", "w") as fo:
+	with open(fname, "w") as fo:
 	
 		# Start with headers guards, includes and defines
 		final_output = (
@@ -90,7 +90,7 @@ def generate(board_list):
 		# Define M_max
 		cnt = 0
 		for board in board_list:
-			cnt += board.message_cnt
+			cnt += len(board.messages)
 		final_output += (
 			f"#define M_MAX                 {cnt}\n"
 			f"\n"

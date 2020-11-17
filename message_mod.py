@@ -3,27 +3,25 @@ class Message:
 	def __init__(self):
 		self.name = ""
 		self.id = 0
-		self.signal = []
-		self.signal_cnt = 0
+		self.signals = []
 
 	def set_params(self, message_name, message_id):
 		self.name = message_name
 		self.id = message_id
 
 	def add_signal(self, signal):
-		self.signal.append(signal)
-		self.signal_cnt += 1
+		self.signals.append(signal)
 
 	def print_callback(self):
 		callbacks = []
-		for sig in self.signal:
+		for sig in self.signals:
 			callbacks.append(sig.print_callback())
 		string = '\n'.join(callbacks)
 		return string
 
 	def print_signal_enum(self):
 		signal_enum = []
-		for sig in self.signal:
+		for sig in self.signals:
 			signal_enum.append(sig.print_enum())
 		string = ',\n'.join(signal_enum)
 		return string
@@ -45,9 +43,9 @@ class Message:
 		return string
 
 	def print_para_macro(self, last):
-		cnt = len(self.signal)
+		cnt = len(self.signals)
 		para_macro = []
-		for index, sig in enumerate(self.signal, start=1):
+		for index, sig in enumerate(self.signals, start=1):
 			if last and cnt == index:
 				para_macro.append(sig.print_para_macro(1))
 			else:
@@ -64,22 +62,22 @@ class Message:
 			f""
 		)
 		
-		for index, sig in enumerate(self.signal, start=1):
-			if index == self.signal_cnt:
+		for index, sig in enumerate(self.signals, start=1):
+			if index == len(self.signals):
 				string += f"sizeof({sig.type}),"
 			else:
 				string += f"sizeof({sig.type}) + "
 		
 		string += (
 			f" /* DLC of Message */\n"
-			f"                {self.signal_cnt}, /* No. of Links */\n"
+			f"                {len(self.signals)}, /* No. of Links */\n"
 			f"                {{\n"
 		)
 
 		byte_pos = "0"
 
-		for index, sig in enumerate(self.signal, start=1):
-			if index == self.signal_cnt:
+		for index, sig in enumerate(self.signals, start=1):
+			if index == len(self.signals):
 				string += sig.print_definition(byte_pos, 1, little_endian)
 			else:
 				string += sig.print_definition(byte_pos, 0, little_endian)
@@ -93,8 +91,8 @@ class Message:
 
 	def print_message_def_telemetry(self, little_endian):
 		signals_str = ""
-		for index, sig in enumerate(self.signal, start=1):
-			if index == self.signal_cnt:
+		for index, sig in enumerate(self.signals, start=1):
+			if index == len(self.signals):
 				signals_str += f"sizeof({sig.type}),"
 			else:
 				signals_str += f"sizeof({sig.type}) + "
@@ -109,14 +107,14 @@ class Message:
 			f"                        "
 			f"\"{self.name}\","
 			f" /* Name of Message */\n"
-			f"                        {self.signal_cnt}, /* No. of Links */\n"
+			f"                        {len(self.signals)}, /* No. of Links */\n"
 			f"                        {{\n"
 		)
 
 		byte_pos = f"0"
 		
-		for index, sig in enumerate(self.signal, start=1):
-			if index == self.signal_cnt:
+		for index, sig in enumerate(self.signals, start=1):
+			if index == len(self.signals):
 				string += sig.print_definition_telemetry(byte_pos, 1, little_endian)
 			else:
 				string += sig.print_definition_telemetry(byte_pos, 0, little_endian)
