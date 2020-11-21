@@ -81,6 +81,7 @@ Les valeurs minimales et maximales du signal sont indiqués dans min_value et ma
 ## Fonctionnement et dataflow du logiciel
 
 Diagramme de fonctionnement du logiciel memstruct-builder :
+
 ![image](./img/memstruct_diagram.png)
 
 L'exécution débute à `eclipseMemstructGen.py` où toutes les lignes du `memstruct_entry.txt` sont parsés individuellement pour décoder les paramètres. Le fichier `memparser.py` décodera les paramètres des boards, messages et signaux dépendamment du début de chaque ligne (b:, m: ou s:). Chaque nouveau signal décodé est ajouté au message courant (dernier message lu). De la même manière, chaque message est ajouté au board courant (dernier board lu). Nous obtenons ainsi une description du CAN hiérarchique organisé par les fichiers `board_mod.py`, `message_mod.py` et `signal_mod.py`.
@@ -103,6 +104,59 @@ Pour ajouter une entrée à un fichier -- par exemple un nouvel enum de valeurs 
 
 La fonction au plus bas niveau retourne la valeur alors que les niveaux supérieurs combinent ces valeurs individuelles. Dans le fichier python de génération, il suffit d'appeler cette nouvelle fonction pour tous les boards et d'écrire la combinaison des résultats (concat) dans le string de sortie final.
 
+## Contribution
+
+Ce logiciel utilise PEP-8 comme standard pour uniformiser le code python. PEP-8 étant un outil pour aider au coding style, il est parfois nécessaire de dévier de ses suggestions.
+
+Le logiciel utilise aussi les f-string `f'value = {value}'` pour la majorité du formattage de string lorsque possible.
+
+Ajouter des fonctionnalités au memstruct implique aussi mettre à jour ou ajouter des units tests. Les tests utilisés par le memstruct-builder sont décrits à la prochaine section.
+
 ## Tests unitaires
+
+Ce projet utilise la librairie PyTest pour exécuter des tests unitaires. Ces tests n'assurent pas le bon fonctionnement du programme, mais permettent d'éviter certaines erreurs durant le développement et de réduire la quantité de bugs.  
+
+Les fichiers de tests sont définis dans le dossier `test/` du dossier root.  
+
+Pour exécuter les tests unitaires :
+```
+coverage run -m pytest
+```
+Si un test échoue, le message devrait être assez clair pour retrouver le assert qui a causé l'échec.  
+
+**SVP: Si un test échoue, essayez de comprendre le test pour le modifier et ne pas hardcoder le résultat attendu juste pour que le test arrête de chialer**
+
+Pour regarder les statistiques des tests effectués (après avoir roulé les tests!) :
+```
+coverage report
+```
+
+## Ajout de fonctions aux tests
+
+Si une fonction doit être changée dans le code du memstruct, il est nécessaire de aussi changer le test unitaire pour celle-ci. Généralement, toutes les fonctions du logiciel sont testés individuellement dans le fichier de test correspondant.
+
+Si une nouvelle fonction est ajoutée au memstruct, alors cette nouvelle fonction devrait aussi être testée dans les tests.  
+Puisque ces fonctions de tests n'ont pas à être appelées directement, il est préférable d'utiliser un nom très descriptif et long. À titre d'exemple, si le test regarde seulement si un string ne finit pas avec un retour à la ligne, un nom adéquat serait:
+```
+test_fonction_name_should_not_end_with_newline_character():
+```
+
+Essayez de garder un assert par fonction, ou du moins un assert par itération d'une boucle.
+```
+for x in range():
+	...
+	assert x == y
+```
+
+Si le assert est dans une boucle pour tester plusieurs combinaisons, il est préférable d'ajouter un message d'erreur au assert pour aider au débogage :
+```
+for x,y,z in ...:
+	assert fonction(x,y,z) == test(x,y,z), f'test failed with x={x}, y{y} and z{z}'
+```
+De cette façon, si le test échoue, quelqu'un aura plus d'information pour le régler !
+
+Il existe beaucoup d'autres fonctionnalités à PyTest, comme le mocking ou la capture de resources. Se référer à la documentation officielle pour plus d'information: [PyTest doc](https://docs.pytest.org/en/stable/contents.html).
+
+
 
 
