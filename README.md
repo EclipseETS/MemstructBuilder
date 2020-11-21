@@ -35,8 +35,8 @@ Les fichiers résultants sont écrits dans le dossier `output/` du dossier root.
 
 ## Fichiers output
 
-Les fichiers `memstruct.h` et `memstruct.c` sont utilisés par le code des microcontrôleurs de Éclipse. Il doivent être copiés dans le dossier `Common` du Github.
-Le fichier `telemetryMemstruct.h` est utilisé par le software de télémétrie. Il doit être copié dans le répertoire `/inserter/src/` du projet de télémétrie et ensuite recompiler le projet de télémétrie.
+Les fichiers `memstruct.h` et `memstruct.c` sont utilisés par le code des microcontrôleurs de Éclipse. Il doivent être copiés dans le dossier `Common` du Github.  
+Le fichier `telemetryMemstruct.h` est utilisé par le software de télémétrie. Il doit être copié dans le répertoire `/inserter/src/` du projet de télémétrie. Il est nécessaire de recompiler le projet de télémétrie pour que les changement prennent effet.  
 Le fichier `CAN_DB_E10.dbc` est utilisé par le Vector CANAnalyzer.
 
 ## Description du fichier memstruct_entry.txt
@@ -55,9 +55,9 @@ Pour ajouter, enlever ou modifier la description du CAN, il suffit de modifier l
 b:board_name, board_offset, is_extended, is_little_endian
 ```
 
-Le board offset correspond à la plage des CAN IDs associés à ce board. Par exemple, pour un offset de `0x300`, les messages devraient correspondre à `0x300, 0x301, 0x302, ...`.
-Le flag is_extended représente si les CAN IDs utilisés utilisent le CAN extended (1) ou non (0)
-Le flag is_little_endian indique si le board transmet ses messages en little endian (1) ou big endian (0)
+Le board offset correspond à la plage des CAN IDs associés à ce board. Par exemple, pour un offset de `0x300`, les messages devraient correspondre à `0x300, 0x301, 0x302, ...`.  
+Le flag is_extended représente si les CAN IDs utilisent le CAN extended (1) ou non (0).  
+Le flag is_little_endian indique si le board transmet ses messages en little endian (1) ou big endian (0).
 
 **Les paramètres de définition pour un message**
 ```
@@ -72,10 +72,10 @@ s:signal_name, data_type, init_value, factor, offset, unit, min_value, max_value
 Le data_type doit être choisi parmis les choix suivants:
  - `Types supportés: 8, 16, 32, U8, U16, U32, F`
  
-init_value est la valeur d'initialisation du signal
-factor est un coefficient multiplicatif qui est associé au signal (pour faire des conversions m/s en km/h par exemple)
-L'unité est un string (ex. 'rpm', 'm/s', 'W') associé au signal
-Les valeurs minimales et maximales du signal sont indiqués dans min_value et max_value respectivement.
+init_value est la valeur d'initialisation du signal.  
+factor est un coefficient multiplicatif qui est associé au signal (pour faire des conversions m/s en km/h par exemple).  
+L'unité est un string (ex. 'rpm', 'm/s', 'W') associé au signal.  
+Les valeurs minimales et maximales du signal sont indiqués dans min_value et max_value respectivement.  
 
 
 ## Fonctionnement et dataflow du logiciel
