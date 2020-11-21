@@ -100,9 +100,9 @@ De cette façon, il devient facile de générer des enums ou arrays de tous les 
 
 ## Ajouter une entrée dans les fichiers générés
 
-Pour ajouter une entrée à un fichier -- par exemple un nouvel enum de valeurs -- il faudra ajouter des fonctions dans `board_mod.py` et/ou `message_mod.py` et/ou `signal_mod.py` dépendamment de où ces valeurs sont définis. Si ces valeurs sont défini au niveau des boards, alors seulement une nouvelle fonction pour `board_mod.py` est nécessaire. Si l'information est au niveau des messages, alors il faudra la fonction à `board_mod.py` et `message_mod.py` et ainsi de suite pour une information de signal.
+Pour ajouter une entrée à un fichier -- par exemple un nouvel enum de valeurs -- il faudra ajouter des fonctions dans `board_mod.py` et/ou `message_mod.py` et/ou `signal_mod.py` dépendamment de où ces valeurs sont définis. Si ces valeurs sont défini au niveau des boards, alors seulement une nouvelle fonction pour `board_mod.py` est nécessaire. Si l'information est au niveau des messages, alors il faudra ajouter la fonction à `board_mod.py` et `message_mod.py` et ainsi de suite pour une information de signal.
 
-La fonction au plus bas niveau retourne la valeur alors que les niveaux supérieurs combinent ces valeurs individuelles. Dans le fichier python de génération, il suffit d'appeler cette nouvelle fonction pour tous les boards et d'écrire la combinaison des résultats (concat) dans le string de sortie final.
+La fonction au plus bas niveau retourne la valeur alors que les niveaux supérieurs combinent ces valeurs individuelles. Dans le fichier python de génération (eg. `memstructc.py`), il suffit d'appeler cette nouvelle fonction pour tous les boards et d'écrire la combinaison des résultats (concat) dans le string de sortie final.
 
 ## Contribution
 
